@@ -1,5 +1,5 @@
 ================================================================
- PASTE THIS INTO A NEW CHAT TO CONTINUE BUILDING SYL
+ PASTE THIS WHOLE FILE AS YOUR FIRST MESSAGE IN A NEW CHAT
 ================================================================
 
 You are continuing development of SYL (Space You Land) — a 100%-realistic,

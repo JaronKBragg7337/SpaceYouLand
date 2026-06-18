@@ -2,7 +2,7 @@
 
 > Read this to know exactly what the previous session knew and could do. Pair with **BUILDLOG.md**
 > (current state + history + "Next up") and your **memory** (auto-loads on this machine: MEMORY.md +
-> linked files). If you paste NEW_CHAT_START.txt into a new chat, it points you here.
+> linked files). If you paste PASTE_INTO_NEW_CHAT.txt into a new chat, it points you here.
 
 ## 0. Orientation order
 1. **This file** — how to operate (tools, pipeline, gotchas).

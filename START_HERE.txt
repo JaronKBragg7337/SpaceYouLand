@@ -1,20 +1,25 @@
-CURTIS AI UNREAL LAB
-====================
+SYL — START HERE
+================
 
-After Unreal Engine 5.8 is installed:
+This is SYL (Space You Land), a from-scratch, 100%-realistic space game built in
+Unreal Engine. (It began under the old name "Curtis AI Unreal Lab.")
 
-1. Double-click CurtisAILab.uproject and let Unreal open the project.
-2. If Unreal asks to update or convert the project, choose Open a Copy if offered.
-3. In Unreal, open Edit > Plugins and confirm "Unreal MCP" is enabled.
-4. Restart Unreal if it asks.
-5. Open Edit > Editor Preferences > Model Context Protocol.
-6. Turn on Auto Start Server.
-7. Double-click START_CLAUDE.cmd in this folder.
-8. The first time, Claude will ask an adult to sign in and trust this folder.
-9. Ask: Can you see Unreal? List the important actors in the current level.
+There are only two things to know:
 
-Important correction to the old instructions:
-The exact config command is:
-ModelContextProtocol.GenerateClientConfig ClaudeCode
+  TO LAUNCH
+  1. Open the Unreal project: double-click CurtisAILab.uproject (UE 5.8).
+     The MCP server auto-starts (Edit > Editor Preferences > Model Context
+     Protocol > Auto Start Server; "Unreal MCP" plugin enabled).
+  2. Double-click START_CLAUDE.cmd to open Claude in this folder.
 
-This project already includes the same .mcp.json file, so the command should not be necessary unless Epic changes the format.
+  TO CONTINUE THE BUILD IN A NEW CHAT
+  3. Open PASTE_INTO_NEW_CHAT.txt, copy ALL of it, and paste it as your first
+     message. The new session reads SESSION_HANDOFF.md + BUILDLOG.md and picks up
+     exactly where the last one left off.
+
+WHAT EACH FILE IS (so nothing is confusing)
+  PASTE_INTO_NEW_CHAT.txt  -> the prompt you paste into a brand-new chat
+  SESSION_HANDOFF.md       -> how the AI operates (tools, pipeline, gotchas)
+  BUILDLOG.md              -> current state, full history, and what's next
+  START_CLAUDE.cmd         -> launcher: opens Claude in this folder
+  CurtisAILab.uproject     -> the Unreal project file (double-click to open UE)
