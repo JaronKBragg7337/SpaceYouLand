@@ -118,11 +118,24 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   actors (intensity 9000, radius 1700, warm white) for courtyard readability + atmosphere. Steel.
   Checkpoint `_view_props.png`. Compound now reads as an active, lit, defended outpost.
 
+- **2026-06-18 — Servicing props.** Authored `SM_Fortis_FuelDrum` (real cylinder barrel) and
+  `SM_Fortis_Antenna` (mast + crossbars + radar drum) from scratch (`_authoring/make_service.py`,
+  first use of `bmesh.ops.create_cone` for real cylinders). Placed a 6-drum cluster by the gunship +
+  an antenna near the command bunker. Steel. Checkpoint `_view_service.png`.
+
+## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
+## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
+## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
+## real flight/orbit via UE5 Large World Coordinates), not a flat zone + planet-as-a-distant-sphere
+## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
+
 ## Next up (living TODO — keep current)
-- Optional FP polish: mouse-look + Enhanced Input migration (see earlier note).
-- World-fill: ground/road detailing (walkways/markings inside compound); a walkable building interior
-  (ties to SYL "ships/stations are places"); antennae/comms dishes; fuel drums near the gunship.
-- Consider: small interaction prompt when the player nears the gunship (exploration beat).
+- **SPACE ARC (per Jaron's realism law) — pending his go to start:** build the genuine seamless
+  surface→space→planet path. Stage 1 = flyable, walk-in ship pawn (enter gunship, sit, fly). Then
+  takeoff + atmosphere fade, real-scale orbit (LWC), a second real planet, descend/land. Round
+  planets w/ radial gravity is the hard long-term target — build toward it for real, not faked.
+- Optional FP polish: mouse-look + Enhanced Input migration.
+- More world-fill: ground/road detailing; walkable building interior.
 - Author from-scratch modular armored building to replace the cube buildings (task #9).
 - Author from-scratch Fortis gunship for the landing pad (task #10).
 - Later: animate/stage construction over time; walkable ship interior; a station district; needs/health;
