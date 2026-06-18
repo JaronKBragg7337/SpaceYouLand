@@ -1,0 +1,20 @@
+CURTIS AI UNREAL LAB
+====================
+
+After Unreal Engine 5.8 is installed:
+
+1. Double-click CurtisAILab.uproject and let Unreal open the project.
+2. If Unreal asks to update or convert the project, choose Open a Copy if offered.
+3. In Unreal, open Edit > Plugins and confirm "Unreal MCP" is enabled.
+4. Restart Unreal if it asks.
+5. Open Edit > Editor Preferences > Model Context Protocol.
+6. Turn on Auto Start Server.
+7. Double-click START_CLAUDE.cmd in this folder.
+8. The first time, Claude will ask an adult to sign in and trust this folder.
+9. Ask: Can you see Unreal? List the important actors in the current level.
+
+Important correction to the old instructions:
+The exact config command is:
+ModelContextProtocol.GenerateClientConfig ClaudeCode
+
+This project already includes the same .mcp.json file, so the command should not be necessary unless Epic changes the format.

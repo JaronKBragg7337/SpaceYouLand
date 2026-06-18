@@ -1,0 +1,22 @@
+CURTIS'S FIRST 10 UNREAL PROMPTS
+================================
+
+1. Can you see my Unreal project? Tell me the level name and list five important actors.
+
+2. Put one big red cube in an open place near the player start. Name it Curtis_RedCube_01.
+
+3. Put a bright blue sphere next to the cube. Make it about the same size.
+
+4. Make a row of five colorful blocks that I can jump across.
+
+5. Add a tall golden finish tower at the end of the blocks.
+
+6. Add three spinning obstacles between the start and finish. Keep them slow and easy.
+
+7. Add lights that make the obstacle course feel cheerful and colorful.
+
+8. Check that the player can reach the finish. Fix any gaps that are too large.
+
+9. Save this as a new map named Content/Curtis/Curtis_First_Course.
+
+10. Look at everything we built. Suggest one funny surprise we could add, but wait for me to say yes before adding it.

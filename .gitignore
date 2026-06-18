@@ -1,0 +1,30 @@
+# --- Unreal Engine generated (regenerated locally, never commit) ---
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.VC.db
+*.opensdf
+*.sdf
+*.sln
+*.suo
+.vs/
+.vsconfig
+
+# --- Local tooling / session data (machine-specific, may hold settings) ---
+.claude/
+*.lock
+
+# --- Authoring scratch (the .py scripts ARE kept; exports/logs are regenerable) ---
+_authoring/*.fbx
+_authoring/*.glb
+_authoring/*.log
+
+# --- Loose checkpoint screenshots in project root ---
+_*.png
+
+# --- OS cruft ---
+Desktop.ini
+.DS_Store
+Thumbs.db
