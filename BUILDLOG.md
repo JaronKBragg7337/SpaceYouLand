@@ -112,10 +112,16 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   Steel. Checkpoint `_view_towers.png`. **All primitive/cube blockout is now replaced by from-scratch
   geometry** — outpost is fully bespoke.
 
+- **2026-06-18 — Courtyard prop kit + functional lighting.** Authored `SM_Fortis_Barrier` (blast
+  barrier) and `SM_Fortis_Floodlight` (5 m lamp pole) from scratch (`_authoring/make_props.py`).
+  Placed 7 barriers (gate chicane + scattered) and 4 floodlight poles with real warm `PointLight`
+  actors (intensity 9000, radius 1700, warm white) for courtyard readability + atmosphere. Steel.
+  Checkpoint `_view_props.png`. Compound now reads as an active, lit, defended outpost.
+
 ## Next up (living TODO — keep current)
 - Optional FP polish: mouse-look + Enhanced Input migration (see earlier note).
-- World-fill: ground/road detailing inside the compound; a walkable building interior
-  (ties to SYL "ships/stations are places"); courtyard props (barriers, antennae, lights).
+- World-fill: ground/road detailing (walkways/markings inside compound); a walkable building interior
+  (ties to SYL "ships/stations are places"); antennae/comms dishes; fuel drums near the gunship.
 - Consider: small interaction prompt when the player nears the gunship (exploration beat).
 - Author from-scratch modular armored building to replace the cube buildings (task #9).
 - Author from-scratch Fortis gunship for the landing pad (task #10).
