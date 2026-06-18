@@ -171,11 +171,11 @@ A small easter egg is placed in-world per Jaron's blessing: a dedication monolit
 as built objects, never UI chrome).
 
 ## Repository (2026-06-18)
-Version-controlled and backed up to GitHub — **private** repo
+Version-controlled and backed up to GitHub — **PUBLIC** repo (open source, per Jaron)
 **https://github.com/JaronKBragg7337/SpaceYouLand** (account JaronKBragg7337, default branch `main`).
 Auth via `gh` (token in OS keyring — never paste secrets in chat; use `gh auth login` device flow).
 `.gitignore` excludes `Intermediate/ Saved/ DerivedDataCache/ Binaries/ .claude/` and authoring
 scratch (`_authoring/*.fbx|*.log`, root `_*.png`); **Git LFS** tracks `*.uasset *.umap *.ubulk *.uexp`.
-To push future work: `git add -A && git commit -m "…" && git push`. Keep the repo private until Jaron
-chooses to make it public. Never commit secrets — `Config/DefaultEngine.ini` holds a UE-generated
-`SecurityToken` (project-local, not an external credential; fine in a private repo).
+To push future work: `git add -A && git commit -m "…" && git push`. Repo is PUBLIC / open-source — never commit secrets, personal data, or anything not world-safe.
+`Config/DefaultEngine.ini` holds a UE-generated `SecurityToken` (project-local, not an external
+credential — harmless in a public repo).

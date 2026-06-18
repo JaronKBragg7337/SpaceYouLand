@@ -78,7 +78,8 @@ camera (works during PIE, but during PIE it may grab the editor cam — verify v
   You CANNOT simulate keypresses headlessly — Jaron tests flight/movement feel; magnitudes in the graph are tunables.
 
 ## 6. Version control — auto-backup every meaningful change
-- Private GitHub repo: **github.com/JaronKBragg7337/SpaceYouLand**. `gh` is authed (token in OS keyring).
+- **PUBLIC** (open-source) GitHub repo: **github.com/JaronKBragg7337/SpaceYouLand**. `gh` is authed (token in OS keyring).
+  Since it's public: never commit secrets or personal data; double-check before adding new file types.
 - `git add -A && git commit -m "…" && git push` after each chunk. End commit messages with
   `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`. Git LFS tracks `*.uasset *.umap`.
 - `.gitignore` excludes `Intermediate/ Saved/ DerivedDataCache/ Binaries/ .claude/` + authoring scratch.
