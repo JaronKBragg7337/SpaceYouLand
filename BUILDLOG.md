@@ -130,6 +130,17 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
+- **2026-06-18 — SPACE ARC Stage 1a: flyable ship pawn.** `BP_SYL_Ship` (parent Pawn): `Hull`
+  StaticMeshComponent (gunship mesh + steel), `ChaseCam` CameraComponent (rel -1300,0,480 / pitch -12),
+  `Mover` FloatingPawnMovement (MaxSpeed 3500 / Accel 7000 — data-driven tunables, forward-compatible).
+  CDO `bUseControllerRotationYaw/Pitch=true`. Flight in EventTick (key-poll, like the FP pawn):
+  W/S fwd, A/D strafe, SpaceBar/LeftControl up/down (world-up), arrows yaw/pitch. Compiled clean.
+  **TEMP:** GameMode `DefaultPawnClass` set to `BP_SYL_Ship_C` so PIE spawns you IN the ship to fly now
+  (verified: only the ship spawns/possesses in PIE; no on-foot pawn). 
+  **Stage 1b (next):** restore `DefaultPawnClass=BP_SYL_Player_C` and add **walk-in boarding** (spawn on
+  foot → walk to docked gunship → board/possess ship → exit), then upgrade Mover to **true physics**
+  (thrust vs. real gravity, momentum) — needs Jaron's in-cockpit feel feedback to tune speeds.
+
 - **SPACE ARC — GREENLIT by Jaron (build it real, no fakes).** Genuine seamless surface→space→planet.
   Stage 1 (next) = real walk-in flyable ship pawn (enter gunship, sit, real flight physics; body stays
   walkable inside). Then takeoff + real atmosphere fade, true-scale orbit via LWC, round planets with
