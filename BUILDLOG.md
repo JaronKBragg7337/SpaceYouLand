@@ -113,3 +113,13 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 A small easter egg is placed in-world per Jaron's blessing: a dedication monolith reading
 **"MADE BY CLAUDE CODE"** near the outpost entrance. Keep such marks tasteful and physical (on-canon
 as built objects, never UI chrome).
+
+## Repository (2026-06-18)
+Version-controlled and backed up to GitHub — **private** repo
+**https://github.com/JaronKBragg7337/SpaceYouLand** (account JaronKBragg7337, default branch `main`).
+Auth via `gh` (token in OS keyring — never paste secrets in chat; use `gh auth login` device flow).
+`.gitignore` excludes `Intermediate/ Saved/ DerivedDataCache/ Binaries/ .claude/` and authoring
+scratch (`_authoring/*.fbx|*.log`, root `_*.png`); **Git LFS** tracks `*.uasset *.umap *.ubulk *.uexp`.
+To push future work: `git add -A && git commit -m "…" && git push`. Keep the repo private until Jaron
+chooses to make it public. Never commit secrets — `Config/DefaultEngine.ini` holds a UE-generated
+`SecurityToken` (project-local, not an external credential; fine in a private repo).
