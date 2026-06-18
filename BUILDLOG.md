@@ -98,12 +98,18 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   holds the crane + under-construction hull, so the finished gunship sits in open courtyard). Steel
   material. Saved. Checkpoint `_view_gunship.png`. The exploration-beat hook now exists physically.
 
+- **2026-06-18 — Perimeter walls + gatehouse (replaced cube walls).** Authored `SM_Fortis_WallPanel`
+  (6 m, crenellated parapet, buttress ribs, battered base) and `SM_Fortis_Gate` (twin-tower gatehouse,
+  X-axis opening) from scratch (`_authoring/make_walls.py`). Removed the 7 cube wall/gate-pillar actors;
+  placed 19 panels around the perimeter (5 N, 5 E, 5 W, 4 S w/ center gap) + the gatehouse at the
+  entrance (-1500,0,50). Steel material. Checkpoint `_view_walls.png`. (Note: this pass ran from a
+  leftover queued loop tick during a pause — Jaron OK'd keeping it.)
+
 ## Next up (living TODO — keep current)
 - Optional FP polish: mouse-look + Enhanced Input migration (see earlier note).
-- World-fill: real perimeter wall/gate geometry (replace cube walls), ground/road detailing,
-  a walkable building interior (ties to SYL "ships/stations are places").
+- World-fill: ground/road detailing inside the compound; a walkable building interior
+  (ties to SYL "ships/stations are places"); corner watchtower upgrades.
 - Consider: small interaction prompt when the player nears the gunship (exploration beat).
-- (Pending Jaron's go: set up local git repo — see his GitHub question.)
 - Author from-scratch modular armored building to replace the cube buildings (task #9).
 - Author from-scratch Fortis gunship for the landing pad (task #10).
 - Later: animate/stage construction over time; walkable ship interior; a station district; needs/health;
