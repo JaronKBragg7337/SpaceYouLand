@@ -141,6 +141,18 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   foot → walk to docked gunship → board/possess ship → exit), then upgrade Mover to **true physics**
   (thrust vs. real gravity, momentum) — needs Jaron's in-cockpit feel feedback to tune speeds.
 
+- **2026-06-18 — Stage 1b (physics): REAL gravity + collision flight.** Jaron tested 1a: ship flew but
+  fell through the floor (no collision/gravity). Converted `BP_SYL_Ship` to a true physics body:
+  generated convex collision on `SM_Fortis_Gunship`; promoted `Hull` to scene root; reattached
+  `ChaseCam` to Hull; removed `Mover` (FloatingPawnMovement); CDO controller-rotation off. EventBeginPlay
+  now: SetCollisionProfileName "PhysicsActor", SetSimulatePhysics true, LinearDamping 1.0, AngularDamping
+  3.0. EventTick flight = `Physics|AddForce`/`AddTorqueinDegrees` (bAccelChange=true, so accel is
+  mass-independent/tunable): Space/Ctrl vertical thrust (must beat gravity ~980 to rise), W/S forward
+  thrust along actor forward, arrows yaw (world Z) + pitch (actor right). **Verified in PIE: ship spawns
+  @302, falls under gravity, RESTS on the floor @ z~142 — no through-floor.** Force magnitudes in the
+  Tick graph are the feel tunables (await Jaron's flight feedback). STILL TODO: walk-in boarding +
+  restore `DefaultPawnClass=BP_SYL_Player_C` (currently spawns you in the ship); optional roll/strafe.
+
 - **SPACE ARC — GREENLIT by Jaron (build it real, no fakes).** Genuine seamless surface→space→planet.
   Stage 1 (next) = real walk-in flyable ship pawn (enter gunship, sit, real flight physics; body stays
   walkable inside). Then takeoff + real atmosphere fade, true-scale orbit via LWC, round planets with
