@@ -130,10 +130,11 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-- **SPACE ARC (per Jaron's realism law) — pending his go to start:** build the genuine seamless
-  surface→space→planet path. Stage 1 = flyable, walk-in ship pawn (enter gunship, sit, fly). Then
-  takeoff + atmosphere fade, real-scale orbit (LWC), a second real planet, descend/land. Round
-  planets w/ radial gravity is the hard long-term target — build toward it for real, not faked.
+- **SPACE ARC — GREENLIT by Jaron (build it real, no fakes).** Genuine seamless surface→space→planet.
+  Stage 1 (next) = real walk-in flyable ship pawn (enter gunship, sit, real flight physics; body stays
+  walkable inside). Then takeoff + real atmosphere fade, true-scale orbit via LWC, round planets with
+  radial gravity, a second real planet, descend/land. All REAL systems built small→full — never faked.
+  Don't treat any of it as "too hard"; the tech barrier is gone (see memory realism-law).
 - Optional FP polish: mouse-look + Enhanced Input migration.
 - More world-fill: ground/road detailing; walkable building interior.
 - Author from-scratch modular armored building to replace the cube buildings (task #9).
