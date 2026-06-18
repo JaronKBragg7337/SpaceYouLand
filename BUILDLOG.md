@@ -105,10 +105,17 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   entrance (-1500,0,50). Steel material. Checkpoint `_view_walls.png`. (Note: this pass ran from a
   leftover queued loop tick during a pause — Jaron OK'd keeping it.)
 
+- **2026-06-18 — Corner watchtowers (replaced cylinder towers).** Authored `SM_Fortis_Watchtower`
+  (`_authoring/make_watchtower.py`, ~360 tris): trussed 4-leg tower w/ cross-braces, railed platform,
+  cabin + window slits, slanted roof, searchlight + antenna; ~9.6 m tall (overlooks the ~5 m walls).
+  Removed the 2 cylinder guard towers; placed 4 watchtowers at all corners (searchlights facing out).
+  Steel. Checkpoint `_view_towers.png`. **All primitive/cube blockout is now replaced by from-scratch
+  geometry** — outpost is fully bespoke.
+
 ## Next up (living TODO — keep current)
 - Optional FP polish: mouse-look + Enhanced Input migration (see earlier note).
 - World-fill: ground/road detailing inside the compound; a walkable building interior
-  (ties to SYL "ships/stations are places"); corner watchtower upgrades.
+  (ties to SYL "ships/stations are places"); courtyard props (barriers, antennae, lights).
 - Consider: small interaction prompt when the player nears the gunship (exploration beat).
 - Author from-scratch modular armored building to replace the cube buildings (task #9).
 - Author from-scratch Fortis gunship for the landing pad (task #10).
