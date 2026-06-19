@@ -47,5 +47,5 @@ first playable faction slice: armored, practical, militarized, and physically le
 Fortis outpost and bespoke prop kit exist at the origin. A 36×28 m clear development apron sits east
 of the walls at (4500,0). The modular Fortis gunship is walkable, uses the same player body for its
 physical pilot seat, has an animated pressure door/ramp, and flies through real Chaos force/torque.
-Automated parking physics is level and stable. The immediate next proof is a human end-to-end E-key
-door → ramp → seat → flight → landing → stand → exit test.
+Jaron's first full boarding/flight/exit playtest passed apart from ramp touchdown and forward visibility;
+both are now corrected (−31° open ramp, eye-level windscreen) and await his quick confirmation.

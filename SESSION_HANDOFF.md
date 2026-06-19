@@ -121,5 +121,6 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
 - Development apron is centered at (4500,0,27.5). Ship is in
   `Fortis_Outpost/Development/Vehicles`, placed at (4500,0,130) for a short gear drop.
 - Automated PIE physics passed: after 5+ seconds the ship remained at ~(4500,0,138.36) with exact
-  0/0/0 pitch/yaw/roll. The graph compiles. Next is the human E-key boarding loop at the top of
-  BUILDLOG "Next up".
+  0/0/0 pitch/yaw/roll. Jaron's full boarding/flight/exit loop otherwise passed. Claude rebuilt the
+  windscreen at eye level; Codex restored its material slots and changed ramp-open pitch to −31°.
+  Next is Jaron's quick visual/touchdown confirmation at the top of BUILDLOG "Next up".

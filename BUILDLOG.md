@@ -185,6 +185,17 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   NOTE on pipeline: to revise a Codex/other mesh, edit its `_authoring/make_*.py`, re-run, then DELETE the
   old asset before re-import (import_file errors on existing) and RE-LINK refs on instance + BP class.
 
+- **2026-06-18 — Windscreen/material recovery + ramp touchdown (Builder: Codex).** Resumed at Claude's
+  request-limit failure. The Exterior and Glass re-imports had `WorldGridMaterial` in their only slots;
+  restored `/Game/Curtis/Materials/M_Fortis_Steel` on `SM_Fortis_Gunship_Exterior` and
+  `M_Fortis_Glass` on `SM_Fortis_Gunship_Glass`. Pilot-eye capture at (4910,0,300) now shows a broad,
+  unobstructed forward view through the real windscreen; front-quarter capture confirms the glazing and
+  steel exterior are both present. Completed Claude's measured ramp fix by safely round-tripping the
+  single connected Tick graph (repairing the known boolean-accessor export shorthand first) and changing
+  open pitch **−26° → −31°**. Blueprint compiled with warnings-as-errors. Five-second PIE regression:
+  ship still settles level at ~(4500,0,138.36), rotation 0/0/0. Scratch evidence:
+  `_codex_pilot_windscreen_fixed.png`, `_codex_windscreen_front_fixed.png` (gitignored).
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -192,11 +203,9 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **Complete the human boarding loop test.** In PIE, start on foot, walk outside to the east development
-   apron, press E at the rear door control, walk up the opened ramp, press E at the pilot seat, fly, land,
-   press E to stand, and walk back out. Physics settling and graph compilation are verified; real key
-   input/seat attachment still needs an end-to-end human pass because headless Unreal tools cannot press
-   gameplay keys. Fix any interaction radius, anchor, collision, or camera issue the test exposes.
+1. **Jaron re-test the two corrected details:** open the ramp and confirm its tip now meets the apron;
+   sit in the pilot seat and confirm the rebuilt eye-level windscreen gives a clear forward view. The
+   full door → ramp → seat → flight → land → stand → exit loop otherwise passed Jaron's first playtest.
 2. Add physical interaction feedback: small in-world prompts/indicator lights at the door control and
    pilot seat, driven by actual proximity/state. No menu teleport and no ship possession shortcut.
 3. Tune cockpit first-person flight feel with Jaron: thrust, pitch/yaw authority, camera position, and
