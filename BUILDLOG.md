@@ -252,6 +252,22 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   wants it easier, next pass can add a realistic reaction-wheel \"stabilize\" key (damp angular velocity /
   hold-to-level near gravity) — flagged, not yet built.
 
+- **2026-06-19 — Cockpit-view root cause: stale instance override (Builder: Claude).** Jaron's 2nd shot
+  still showed a gray wall (sky only a thin top strip) — the "eye below the windscreen" symptom, NOT the
+  body. Root cause: the **placed World Partition ship instance** carried a per-instance override on
+  `CockpitCam.RelativeLocation = (0,0,0)` that shadowed the Blueprint template; worse, the instance would
+  not accept a `z` override (set x=55 stuck, z=48 reverted to 0; `reset_properties` dropped to class
+  default (0,0,0), not the SCS template). So every prior camera reposition only touched the template and
+  never moved the actual in-level/PIE camera — it sat at the seat base, below the glass. **Robust fix:**
+  drive the camera into place in `BP_SYL_Ship` BeginPlay — `SetRelativeLocation (55,0,48)` +
+  `SetRelativeRotation (pitch -6)` on `CockpitCam` — so it's forced to the canopy pose at runtime
+  regardless of instance/template drift (and any future instance is correct). PIE-verified: cockpit cam
+  reads (55,0,48)/pitch -6 after BeginPlay; edit capture from that world pose (4965,0,296) shows a clean
+  wide windscreen (sky fills the frame, console glow at bottom — scratch `_cockpit_fixed.png`). Ship still
+  settles (4500,0,138.36) 0/0/0. **Lesson for both agents:** to move a component on an already-placed
+  OFPA/World-Partition actor, editing the BP template or the instance property may silently fail — drive
+  it in BeginPlay (or re-place the instance). Verify the LIVE/PIE component value, not just the template.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,

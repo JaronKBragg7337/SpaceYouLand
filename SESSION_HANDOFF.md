@@ -126,11 +126,12 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
   (A/D)**. Seated controls: WASD-thrust+roll, Space/Ctrl lift, arrows yaw/pitch, A/D roll, C view, E stand.
   Camera feel lives on the CockpitCam/ChaseCam component transforms + FOV. No possession swap; GameMode
   still spawns `BP_SYL_Player_C` on foot.
-- **CockpitCam was moved forward to the canopy** (rel-to-SeatAnchor (55,0,48) pitch -6) because the seated
-  pilot's own character body blocks a seat-anchored cam in PIE. If you re-tune it, keep the cam FORWARD of
-  the body (~x≥460 ship-rel) or hide the player mesh while seated. Verify with edit-mode
-  `CaptureViewport(captureTransform=...)` — the body only renders in PIE, so an edit capture from the seat
-  pose looks deceptively clear.
+- **CockpitCam pose is driven in BeginPlay** (`SetRelativeLocation (55,0,48)` + `SetRelativeRotation pitch
+  -6`, rel SeatAnchor → canopy). This is deliberate: the placed World Partition ship had a stale
+  per-instance override on `CockpitCam.RelativeLocation` that ignored `z` edits (template/instance writes
+  silently failed), so the cam sat at the seat base below the windscreen. If you re-tune the cockpit eye,
+  change the BeginPlay values (not just the template) and verify the LIVE/PIE component value. To move a
+  component on any already-placed OFPA actor, prefer driving it in BeginPlay or re-placing the instance.
 - Verified: both BPs compile (warnings-as-errors); 5 s PIE settle unchanged at (4500,0,138.36) 0/0/0.
 - DSL gotcha confirmed this pass: `read_graph_dsl` exports member-var accessors as `|GetbPilotSeated`
   (broken) — repair to `Variables|Default|GetPilotSeated` (the `b` is dropped) before any write-back. Also
