@@ -346,6 +346,28 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   **Still open for Codex:** planet *surface color/material* — the gray geoid is hard to tell from the
   sun/sky; add land/water-style color variation so the surface reads and gives navigation landmarks.
 
+- **2026-06-19 — ⚠️ ISSUE FOR CODEX: platforms not unified with the planet surface (found by Jaron + Claude).**
+  Jaron flew the planet and reported it "looks like random platforms with a separate planet layer above
+  them," only the beacons poking through. Root cause (confirmed from the authoring scripts, not yet
+  measured live — Claude had no editor session): there are **three inconsistent "surfaces"** that don't
+  share a height:
+  1. **Global geoid** (`SM_SYL_UnitGeoid` via `BP_SYL_CelestialWorld`) is a **256×128 UV sphere** scaled to
+     6,360 km. At that resolution the flat facets deviate from the true sphere by **tens of meters** within
+     the first ~2 km of the pole (origin). Rough math: the coarse facet from the pole vertex (z=0) to the
+     first ring (~155 km out) interpolates to ≈ **−24 m at 2 km horizontal**, whereas the true surface is
+     ≈ −0.3 m there. So the *visible* near-field planet is NOT at the true surface height.
+  2. **Home Fortis outpost** is the original **flat-world** foundation (z≈0–52), never re-seated onto a
+     curved planet patch. It just sits at its legacy height.
+  3. **Remote site** (`make_remote_surface_site.py`) has its **own** accurate curvature-correct terrain cap
+     (`spherical_height()`), independent of the global geoid.
+  These three don't coincide → platforms read as detached from the planet shell. **Fix direction:** make ONE
+  true surface everything sits on — seat the home outpost on a curvature-correct patch like the remote site,
+  ensure geoid + patches + platform decks share the exact surface height at each location, and either raise
+  the global geoid's near-field fidelity or use it only as the distant silhouette (accurate streamed patches
+  carry the near field). Jaron's surface **color/material** (land/water landmarks) rides along with this.
+  Claude's convex-collision stopgap (prior entry) lets you stand on the geoid meanwhile. NEXT MEASUREMENT:
+  open editor, read world Z of the geoid surface vs apron deck (z≈52) vs remote deck to get exact gaps.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
