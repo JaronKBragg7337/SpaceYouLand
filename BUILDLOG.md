@@ -268,6 +268,19 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   OFPA/World-Partition actor, editing the BP template or the instance property may silently fail — drive
   it in BeginPlay (or re-place the instance). Verify the LIVE/PIE component value, not just the template.
 
+- **2026-06-19 — Mouse-look on foot (Builder: Claude).** Jaron chose controls-polish as the next lane
+  (he'll route the planet + home-base arcs to Codex; the planet must exist before base design — see memory
+  `syl-build-direction`). Added first-person **mouse-look** to `BP_SYL_Player` EventTick: one
+  `Game|Player|GetInputMouseDelta` node, `DeltaX → AddControllerYawInput`, `DeltaY → AddControllerPitchInput`,
+  inside the existing not-seated gate (so it's off while piloting). Used the DSL multi-output bind
+  `(bind (_dx _dy) ...)`; the read-back export is lossy (re-inlines it) so I verified the real wiring with
+  `get_connected_subgraph`: DeltaX→Yaw.Val, DeltaY→Pitch.Val (correct). Arrow-key look + WASD + jump all
+  preserved. Compiled warnings-as-errors. **Jaron to feel-test:** mouse should turn the head on foot;
+  report if pitch is inverted (one-sign flip) or sensitivity needs scaling — both are quick tunables.
+  NOTE: this is mouse-look via the existing polling architecture (the felt win). A full **Enhanced Input
+  asset migration** (IA_/IMC_ assets, EnhancedInputAction events, ship-input rebind) remains a larger
+  follow-up if desired; the SYL project currently has only Variant_* input assets, no IA_Move/IA_Look/IMC.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -283,8 +296,9 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
    landing response. Add roll/strafe only as physically supported controls. (Tunable magnitudes live in
    BP_SYL_Ship EventTick: thrust 2000/-1500, lift ±1900/-1100, yaw ±140, pitch ±95; cam FOV/offsets on
    CockpitCam/ChaseCam.) Optional: add camera lag on ChaseCam (SpringArm) and a free-look modifier key.
-3. Replace polling with Enhanced Input + mouse look after the boarding loop is proven; preserve the same
-   body/seat/ship state model.
+3. Mouse-look on foot is DONE (polling-based). Remaining input polish: tune mouse sensitivity / pitch sign
+   with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,
+   preserving the same body/seat/ship state model. (Per Jaron 2026-06-19, planet + home arcs go to Codex.)
 4. Continue the real space arc: atmosphere transition, LWC true-scale travel/orbit, radial gravity and
    round planets. Build small→full in real units—never a flat-zone or sky-sphere fake.
 5. Secondary world work: roads/ground detailing, walkable building interiors, construction animation,
