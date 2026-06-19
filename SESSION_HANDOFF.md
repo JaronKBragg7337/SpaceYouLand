@@ -113,6 +113,16 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
 ## 11. Current cross-agent handoff (2026-06-19, Builder: Codex)
+> **★ LIVE TOP PRIORITY (for whoever picks up — intended: Codex): UNIFY THE PLATFORMS WITH THE PLANET
+> SURFACE.** Jaron's round-trip test showed the home outpost + remote site do NOT sit on the visible
+> planet — it reads as "random platforms with a separate planet layer above them," only beacons poking
+> through. Three inconsistent surface heights: the low-res 256-seg global geoid, the legacy flat home
+> outpost, and the remote curved patch. Make ONE true surface they all share; also add planet surface
+> color/material for navigation landmarks. Full root cause + fix steps are in **BUILDLOG.md → Next up #1**
+> and the dated "⚠️ ISSUE FOR CODEX" entry. (Claude added a convex-collision stopgap so you can stand on
+> the geoid meanwhile.) The older "Jaron's round-trip is the next action" notes below are now superseded
+> by this.
+
 - Jaron confirmed controls are good until there are real destinations. Codex started the planet lane:
   `BP_SYL_CelestialWorld` now places a true-scale 6,360 km-radius reference world at
   (0,0,-636,000,000 cm), aligned exactly with the level's existing 6,360 km / 60 km SkyAtmosphere.

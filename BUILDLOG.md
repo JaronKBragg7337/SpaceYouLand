@@ -375,12 +375,22 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **Jaron first real round-trip:** from the home apron, launch and fly straight **+X / hold W** about
-   1.95 km to `SYL_SurfaceSite_A01`; acquire the 45 m red beacon and land on the illuminated square pad,
-   then return. Report cruise time, beacon acquisition distance, approach visibility, and touchdown feel.
-2. Tune travel/landing only from that route evidence: current thrust/damping may make the 2 km leg too
-   slow. Preserve one physical body/ship and real acceleration; do not add teleport, map-cut, or fake
-   cruise. Camera/authority feedback can be handled in the same evidence-based pass.
+1. **★ TOP PRIORITY (Codex) — UNIFY THE PLATFORMS WITH THE PLANET SURFACE.** Jaron's round-trip test
+   (2026-06-19) revealed the home outpost and the remote site do NOT sit on the visible planet — it
+   "looks like random platforms with a separate planet layer above them," only the beacons poking through.
+   Root cause + fix direction are written up in the dated **"⚠️ ISSUE FOR CODEX: platforms not unified
+   with the planet surface"** entry in Build history above. In short: the low-res 256-seg global geoid, the
+   legacy flat home outpost, and the remote curved patch are three different surface heights. Make ONE
+   true surface everything sits on (seat the home outpost on a curvature-correct patch like the remote
+   site; align geoid + patches + decks to the same per-location height; use the global geoid only as the
+   distant silhouette or raise its near-field fidelity). FIRST STEP: open the editor, measure world-Z of
+   the geoid surface vs the apron deck (z≈52) vs the remote deck to get exact gaps. **Also add the planet
+   SURFACE COLOR/MATERIAL** (land/water-style variation) so the surface reads and gives navigation
+   landmarks — Jaron asked for this and it rides along with the unification.
+2. After #1, redo **Jaron's round-trip** evidence (cruise time, beacon range, approach, touchdown feel)
+   and tune travel/landing from it. Preserve one physical body/ship and real acceleration; no teleport,
+   map-cut, or fake cruise. NOTE: a convex-collision stopgap is on the geoid so you can stand on it now,
+   but it's the low-res surface — replace as part of #1.
 3. Mouse-look on foot is DONE (polling-based), pitch set NON-inverted (mouse up = look up, FPS-standard;
    `AddControllerPitchInput(-DeltaY)`) per Jaron's test. Remaining input polish: tune mouse sensitivity
    with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,
