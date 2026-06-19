@@ -1,14 +1,15 @@
-# SESSION_HANDOFF — operating manual for a fresh Claude session
+# SESSION_HANDOFF — operating manual for Claude, Codex, or a fresh session
 
-> Read this to know exactly what the previous session knew and could do. Pair with **BUILDLOG.md**
-> (current state + history + "Next up") and your **memory** (auto-loads on this machine: MEMORY.md +
-> linked files). If you paste PASTE_INTO_NEW_CHAT.txt into a new chat, it points you here.
+> Read this to know exactly what the previous builder knew and could do. Pair with **BUILDLOG.md**
+> (current state + history + "Next up") and the repo's **MEMORY.md**. These committed files are the
+> shared state between Claude and Codex. `PASTE_INTO_NEW_CHAT.txt` points every new chat here.
 
 ## 0. Orientation order
 1. **This file** — how to operate (tools, pipeline, gotchas).
 2. **BUILDLOG.md** — what's built, conventions/coordinates, and the live **"Next up"** TODO.
-3. **Memory** (MEMORY.md index → files): `realism-law`, `syl-endgame-intent`, `syl-project-reality`,
-   `working-style-jaron`, `asset-pipeline-toolchain`, `syl-drive-docs`. These hold the design law + the *why*.
+3. **Shared memory** (`MEMORY.md`). Claude may also have private runtime memories (`realism-law`,
+   `syl-endgame-intent`, `syl-project-reality`, `working-style-jaron`, `asset-pipeline-toolchain`,
+   `syl-drive-docs`); use them when available, but commit durable state so every agent can see it.
 4. **CLAUDE.md** — note its "Curtis lab / obstacle course" framing is a wrapper; the real project is
    **SYL (Space You Land)**, a 100%-realistic first-person space game (see memory).
 
@@ -18,7 +19,8 @@ real gravity, walkable ships/stations, cargo/crew physical, "menus observe reali
 built not spawned." Long-term it's a precursor to real space-drone operation; planets→real planets,
 factions→real governments later — so **build forward-compatible**: data-driven factions/planets, real
 units. No premade assets — **everything is authored from scratch.** Current build: a walkable Fortis
-outpost + a real-physics flyable ship (space arc Stage 1). Owner: Jaron.
+outpost, a clear external vehicle-development apron, and a modular walkable real-physics gunship with
+a physical pilot seat, pressure door, and ramp. Owner: Jaron.
 
 ## 2. Connect to Unreal — the build tools are DEFERRED (must be loaded)
 - The `unreal-mcp` tools are NOT loaded by default. Load them with **ToolSearch** (query `unreal`, or
@@ -27,6 +29,9 @@ outpost + a real-physics flyable ship (space arc Stage 1). Owner: Jaron.
   `call_tool(toolset_name, tool_name, arguments)`. **tool_name is the SHORT name** (no toolset prefix).
 - Needs Unreal Editor OPEN with the MCP server on `http://127.0.0.1:8000/mcp` (auto-starts). If down:
   confirm the editor is open; `Test-NetConnection 127.0.0.1 -Port 8000`. Ask Jaron to open the project.
+- If ToolSearch/unreal-mcp is not directly exposed (known Codex desktop case), use MCP JSON-RPC over
+  local HTTP from PowerShell: initialize, send `notifications/initialized`, retain `Mcp-Session-Id`,
+  then call the same meta-tools. This route is proven and does not require mouse automation.
 - **Toolsets you'll use:** `SceneTools` (add/find/remove actors, folders, levels, add_to_scene_from_asset/
   _from_class), `ActorTools` (transforms, components, labels, get_root_component, set_parent_component),
   `ObjectTools` (get/set_properties, get_default_object CDO, search classes), `StaticMeshTools`
@@ -51,9 +56,9 @@ outpost + a real-physics flyable ship (space arc Stage 1). Owner: Jaron.
    or `StaticMeshTools.set_material`. Existing mats: `M_Fortis_Steel`, `M_Fortis_Red`, `M_Claude_Sign`.
 
 ## 4. Viewport screenshots (IMPORTANT decode trick)
-`EditorAppToolset.CaptureViewport` returns a base64 PNG **too big to inline** (it errors and saves to a
-tool-result `.txt`). To see it: read the newest tool-result file, `json.loads`, take
-`returnValue.image.data`, base64-decode, write a `.png`, then Read the png. Snippet:
+`EditorAppToolset.CaptureViewport` returns a base64 PNG **too big to inline**. Current MCP responses
+place JSON in the first text content block; parse it, take `returnValue.image.data`, base64-decode,
+write a `.png`, then inspect it. Older clients may save the same payload to a tool-result `.txt`:
 ```python
 import json,base64,glob,os
 f=max(glob.glob('<tool-results-dir>/mcp-unreal-mcp-call_tool-*.txt'),key=os.path.getmtime)
@@ -61,8 +66,9 @@ raw=open(f).read(); rv=json.loads(raw[raw.find('{'):])['returnValue']
 rv=json.loads(rv) if isinstance(rv,str) else rv
 open('out.png','wb').write(base64.b64decode(rv['image']['data']))
 ```
-Pass an `annotations` object with all fields 0/null to disable overlays. `captureTransform: null` = current
-camera (works during PIE, but during PIE it may grab the editor cam — verify via `find_actors`/transforms).
+Pass an `annotations` object with every field present. Use zero values plus
+`classFilter={refPath:"/Script/Engine.Actor"}` to disable overlays; the current server errors when the
+object is omitted. `captureTransform: null` = current camera (verify world/pose during PIE).
 
 ## 5. Blueprints (scripting logic)
 - `BlueprintTools.create(folder, name, asset_type={refPath:"/Script/Engine.Character|Pawn|GameModeBase"})`.
@@ -76,12 +82,18 @@ camera (works during PIE, but during PIE it may grab the editor cam — verify v
   ("W","S","A","D","SpaceBar","LeftControl","Left","Right","Up","Down").
 - Verify: `EditorAppToolset.StartPIE` → `SceneTools.find_actors` / `ActorTools.get_actor_transform` → `StopPIE`.
   You CANNOT simulate keypresses headlessly — Jaron tests flight/movement feel; magnitudes in the graph are tunables.
+- `read_graph_dsl` currently exports Blueprint boolean accessors as invalid IDs such as
+  `|GetbPilotSeated`. Before writing a read graph back, repair them to
+  `Variables|Default|GetPilotSeated` / `SetPilotSeated` (same pattern for RampOpen/InteractLatch).
+- Walkable-ship collision law: only flat `Hull` + four landing-pad boxes join the rigid body. Ramp,
+  rear door, cabin walls, roof, and nose must be `SetCollisionEnabled QueryOnly` with
+  `bAutoWeld=false`. Otherwise Chaos welds the cabin cage into the body and it parks nose-down.
 
 ## 6. Version control — auto-backup every meaningful change
 - **PUBLIC** (open-source) GitHub repo: **github.com/JaronKBragg7337/SpaceYouLand**. `gh` is authed (token in OS keyring).
   Since it's public: never commit secrets or personal data; double-check before adding new file types.
-- `git add -A && git commit -m "…" && git push` after each chunk. End commit messages with
-  `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`. Git LFS tracks `*.uasset *.umap`.
+- `git add -A && git commit -m "…" && git push` after each chunk. Attribute the actual builder only;
+  BUILDLOG entries should say `Builder: Claude` or `Builder: Codex`. Git LFS tracks `*.uasset *.umap`.
 - `.gitignore` excludes `Intermediate/ Saved/ DerivedDataCache/ Binaries/ .claude/` + authoring scratch.
 - **NEVER** paste a token/secret in chat. If re-auth needed: `gh auth login` (device flow — Jaron approves in browser).
 
@@ -99,3 +111,15 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
 - **No philosophy/"robe" language.** Concrete, build-focused, proof-over-theory; web-check live player reality when useful.
 - **Loop discipline:** ONE coherent chunk per pass; save + append BUILDLOG + checkpoint screenshot + git push each pass;
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
+
+## 10. Current cross-agent handoff (2026-06-18, Builder: Codex)
+- `BP_SYL_GameMode` spawns `BP_SYL_Player_C` on foot. Do not restore the "spawn as ship" shortcut.
+- `BP_SYL_Ship` keeps the same character body and attaches it to `SeatAnchor`; there is no possession
+  swap. E controls door/seat/stand by proximity; flight forces run only while `bPilotSeated`.
+- Gunship assets: `/Game/Curtis/Meshes/Gunship`; source `_authoring/make_walkable_gunship.py`.
+  Apron assets: `/Game/Curtis/Meshes/Infrastructure`; source `_authoring/make_dev_apron.py`.
+- Development apron is centered at (4500,0,27.5). Ship is in
+  `Fortis_Outpost/Development/Vehicles`, placed at (4500,0,130) for a short gear drop.
+- Automated PIE physics passed: after 5+ seconds the ship remained at ~(4500,0,138.36) with exact
+  0/0/0 pitch/yaw/roll. The graph compiles. Next is the human E-key boarding loop at the top of
+  BUILDLOG "Next up".

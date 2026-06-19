@@ -12,25 +12,32 @@ doing anything else, get oriented IN THIS ORDER:
    Both are in the project root:
    C:\Users\lilli\Documents\Unreal Projects\CurtisAILab
 
-2. Check your memory: MEMORY.md and its linked files (realism-law,
+2. Read the project-root MEMORY.md. It is the agent-neutral memory shared through
+   GitHub. If your runtime also has private linked memories (realism-law,
    syl-endgame-intent, syl-project-reality, working-style-jaron,
-   asset-pipeline-toolchain, syl-drive-docs). These hold the design law and the WHY.
+   asset-pipeline-toolchain, syl-drive-docs), load them too, but treat the repo
+   handoff files as the state both Claude and Codex can see.
 
-3. Connect to Unreal: the build tools are deferred — use ToolSearch (query
-   "unreal") to load the unreal-mcp tools, then list_toolsets to confirm the
-   editor is connected (server at 127.0.0.1:8000). If it's down, ask me to open
-   the Unreal project.
+3. Connect to Unreal: use ToolSearch (query "unreal") to load unreal-mcp when
+   available, then list_toolsets. The server is at 127.0.0.1:8000. Codex desktop
+   can use direct MCP JSON-RPC over local HTTP if the deferred tools are not
+   exposed. If the server is down, ask me to open the Unreal project.
 
 4. Then continue from BUILDLOG.md "Next up", honoring the realism law
    (100% real, no fakes; forward-compatible / data-driven / real units), and
-   SAVE + COMMIT + PUSH to the private GitHub repo after each step.
+   SAVE + COMMIT + PUSH to GitHub after each coherent step.
 
 How things get built here: assets are modeled from scratch in Blender (headless)
 -> exported FBX -> imported into Unreal; game logic is scripted with BlueprintTools
 write_graph_dsl; everything auto-backs-up to github.com/JaronKBragg7337/SpaceYouLand
 (gh is already authenticated). If you don't see a capability, search for it
-(ToolSearch / list_toolsets / find_node_types) or build it from scratch before
+(ToolSearch / direct MCP / list_toolsets / find_node_types) or build it from scratch before
 concluding it doesn't exist.
+
+Claude and Codex share progress through SESSION_HANDOFF.md, BUILDLOG.md, and
+MEMORY.md. Every completed chunk must state who built it and be pushed so the
+other agent can continue without guessing. The repository is currently PUBLIC,
+so never commit secrets or personal data.
 
 To run continuously and hands-off, I'll use:  /loop  (you self-pace, do one
 coherent chunk per pass, log + screenshot + push each pass).

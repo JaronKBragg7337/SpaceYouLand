@@ -3,8 +3,8 @@
 > **Read this first if you're a fresh session.** This is the running record of what's been
 > built in-engine and how. Pair it with `SYL_FirstPlayable_Plan.md` (older, partly off-canon)
 > and the canonical design docs in Google Drive (folder **Space-You-Land (2026-2027)**).
-> Persistent memory (`~/.claude/projects/.../memory/MEMORY.md`) holds the project reframe,
-> the Drive doc IDs, the toolchain, and how Jaron wants to work. Load those before building.
+> Shared project memory lives in `MEMORY.md`; operational details live in `SESSION_HANDOFF.md`.
+> These repo files are the handoff contract between Claude, Codex, and future sessions.
 
 ## What SYL actually is (one paragraph)
 Persistent, **first-person**, shared-galaxy space game. **Menus observe reality; they don't
@@ -37,6 +37,9 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 - **Player spawn:** origin (0,0,302). Player faces **+X**. Units = cm.
 - **Fortis outpost:** 3000×3000 compound centered at origin, foundation top at **z=50**. Entrance gap
   on **-X** (behind spawn). Everything named `Fortis_*`, filed in outliner folder `Fortis_Outpost/...`.
+- **Development apron:** 36×28 m clear integration platform centered at **(4500,0)** outside the east
+  wall; structural top collision is **z=52.25**. Folder `Fortis_Outpost/Development`. Use this area for
+  vehicle construction, physics settling, boarding tests, and clean captures—not the crowded courtyard.
 - **Materials** (`/Game/Curtis/Materials`): `M_Fortis_Steel` (dark metallic), `M_Fortis_Red` (red emissive beacon).
 - **Lighting:** grim overcast dusk — DirectionalLight intensity 7, warm; SkyLight 3.2 cool fill; fog 0.035;
   two red `Fortis_AlertLight_*` point lights over the courtyard (intensity 5000, radius 1800).
@@ -123,6 +126,28 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   first use of `bmesh.ops.create_cone` for real cylinders). Placed a 6-drum cluster by the gunship +
   an antenna near the command bunker. Steel. Checkpoint `_view_service.png`.
 
+- **2026-06-18 — Walkable Fortis gunship + development apron (Builder: Codex).** Replaced the sealed
+  low-detail gunship prop with a modular, human-scale ship authored from scratch in
+  `_authoring/make_walkable_gunship.py`: physics deck, armored exterior, modeled interior, trim,
+  cockpit glass, fasteners/bolts, rear ramp, sliding pressure door, raised identity marking, landing
+  gear, engines, cockpit/seat/console, cargo bay benches/lockers/conduits, and internal lights. Assets
+  live under `/Game/Curtis/Meshes/Gunship`; new materials are `M_Fortis_Glass` and
+  `M_Fortis_Interior`. `BP_SYL_Ship` now keeps the player's existing body: E near the exterior door
+  control toggles the ramp/door; E near the pilot seat disables character movement/collision and
+  attaches that same character to `SeatAnchor`; E while seated detaches to `StandAnchor`. Flight forces
+  are gated by `bPilotSeated`; the GameMode again spawns `BP_SYL_Player_C` on foot.
+
+  Built `_authoring/make_dev_apron.py` and imported a real 36×28 m steel development apron plus raised
+  red safety markings under `/Game/Curtis/Meshes/Infrastructure`, centered at (4500,0,27.5). Moved the
+  gunship to the clear apron. Removed 12 stale ThirdPerson template obstacle actors that obstructed the
+  outpost and were not part of Fortis. Final collision architecture: flat deck is the simulated root;
+  four welded box colliders match the modeled landing pads; ramp, pressure door, cabin walls, roof, and
+  nose are `QueryOnly` so characters can walk against them without welding the cabin cage into the
+  flight body. PIE simulation after 5+ seconds: ship location ~(4500,0,138.36), rotation exactly
+  pitch/yaw/roll 0/0/0. Apron trace was flat across its full width. Checkpoints:
+  `_codex_walkable_ship_exterior.png`, `_codex_walkable_ship_interior.png`,
+  `_codex_walkable_ship_apron_pie.png` (ignored scratch captures, not committed).
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -130,40 +155,21 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-- **2026-06-18 — SPACE ARC Stage 1a: flyable ship pawn.** `BP_SYL_Ship` (parent Pawn): `Hull`
-  StaticMeshComponent (gunship mesh + steel), `ChaseCam` CameraComponent (rel -1300,0,480 / pitch -12),
-  `Mover` FloatingPawnMovement (MaxSpeed 3500 / Accel 7000 — data-driven tunables, forward-compatible).
-  CDO `bUseControllerRotationYaw/Pitch=true`. Flight in EventTick (key-poll, like the FP pawn):
-  W/S fwd, A/D strafe, SpaceBar/LeftControl up/down (world-up), arrows yaw/pitch. Compiled clean.
-  **TEMP:** GameMode `DefaultPawnClass` set to `BP_SYL_Ship_C` so PIE spawns you IN the ship to fly now
-  (verified: only the ship spawns/possesses in PIE; no on-foot pawn). 
-  **Stage 1b (next):** restore `DefaultPawnClass=BP_SYL_Player_C` and add **walk-in boarding** (spawn on
-  foot → walk to docked gunship → board/possess ship → exit), then upgrade Mover to **true physics**
-  (thrust vs. real gravity, momentum) — needs Jaron's in-cockpit feel feedback to tune speeds.
-
-- **2026-06-18 — Stage 1b (physics): REAL gravity + collision flight.** Jaron tested 1a: ship flew but
-  fell through the floor (no collision/gravity). Converted `BP_SYL_Ship` to a true physics body:
-  generated convex collision on `SM_Fortis_Gunship`; promoted `Hull` to scene root; reattached
-  `ChaseCam` to Hull; removed `Mover` (FloatingPawnMovement); CDO controller-rotation off. EventBeginPlay
-  now: SetCollisionProfileName "PhysicsActor", SetSimulatePhysics true, LinearDamping 1.0, AngularDamping
-  3.0. EventTick flight = `Physics|AddForce`/`AddTorqueinDegrees` (bAccelChange=true, so accel is
-  mass-independent/tunable): Space/Ctrl vertical thrust (must beat gravity ~980 to rise), W/S forward
-  thrust along actor forward, arrows yaw (world Z) + pitch (actor right). **Verified in PIE: ship spawns
-  @302, falls under gravity, RESTS on the floor @ z~142 — no through-floor.** Force magnitudes in the
-  Tick graph are the feel tunables (await Jaron's flight feedback). STILL TODO: walk-in boarding +
-  restore `DefaultPawnClass=BP_SYL_Player_C` (currently spawns you in the ship); optional roll/strafe.
-
-- **SPACE ARC — GREENLIT by Jaron (build it real, no fakes).** Genuine seamless surface→space→planet.
-  Stage 1 (next) = real walk-in flyable ship pawn (enter gunship, sit, real flight physics; body stays
-  walkable inside). Then takeoff + real atmosphere fade, true-scale orbit via LWC, round planets with
-  radial gravity, a second real planet, descend/land. All REAL systems built small→full — never faked.
-  Don't treat any of it as "too hard"; the tech barrier is gone (see memory realism-law).
-- Optional FP polish: mouse-look + Enhanced Input migration.
-- More world-fill: ground/road detailing; walkable building interior.
-- Author from-scratch modular armored building to replace the cube buildings (task #9).
-- Author from-scratch Fortis gunship for the landing pad (task #10).
-- Later: animate/stage construction over time; walkable ship interior; a station district; needs/health;
-  a hostile incursion loop.
+1. **Complete the human boarding loop test.** In PIE, start on foot, walk outside to the east development
+   apron, press E at the rear door control, walk up the opened ramp, press E at the pilot seat, fly, land,
+   press E to stand, and walk back out. Physics settling and graph compilation are verified; real key
+   input/seat attachment still needs an end-to-end human pass because headless Unreal tools cannot press
+   gameplay keys. Fix any interaction radius, anchor, collision, or camera issue the test exposes.
+2. Add physical interaction feedback: small in-world prompts/indicator lights at the door control and
+   pilot seat, driven by actual proximity/state. No menu teleport and no ship possession shortcut.
+3. Tune cockpit first-person flight feel with Jaron: thrust, pitch/yaw authority, camera position, and
+   landing response. Add roll/strafe only as physically supported controls.
+4. Replace polling with Enhanced Input + mouse look after the boarding loop is proven; preserve the same
+   body/seat/ship state model.
+5. Continue the real space arc: atmosphere transition, LWC true-scale travel/orbit, radial gravity and
+   round planets. Build small→full in real units—never a flat-zone or sky-sphere fake.
+6. Secondary world work: roads/ground detailing, walkable building interiors, construction animation,
+   station district, physical needs/health, hostile incursion loop.
 
 ## Signature
 A small easter egg is placed in-world per Jaron's blessing: a dedication monolith reading
