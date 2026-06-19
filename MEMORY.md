@@ -59,5 +59,12 @@ true-scale 6,360 km-radius `BP_SYL_CelestialWorld` is centered 6,360 km beneath 
 the existing real SkyAtmosphere radius/height. The gunship reads that actor's radius and 9.80665 m/s²
 surface acceleration and applies inverse-square radial gravity; an off-axis automated probe confirmed
 force points exactly toward the body center. The continuous geoid is authored from scratch and always
-loaded, but does not pretend to be local terrain: streamed curvature-conforming terrain/collision and a
-remote landing site are next, followed by radial character orientation.
+loaded, but does not pretend to be local terrain. Streamed local surface geometry now supplies that
+layer; radial character orientation is next.
+
+The first destination now exists. `SYL_SurfaceSite_A01` is 2 km along the planet surface in the +X
+direction from home, placed and pitched from exact 6,360 km spherical coordinates. It streams as a
+World Partition surface actor with a 2×2 km curved UCX-collidable terrain cap, 80×80 m physical deck,
+shelter, 45 m red beacon, and real pad lighting. The gunship passed an automated radial touchdown with
+0.009 cm tangential drift and still settles normally at home. Jaron's next useful test is the full
+home→site→home flight; its real travel time and approach visibility should drive the next tuning pass.

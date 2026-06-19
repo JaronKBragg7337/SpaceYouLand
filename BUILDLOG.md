@@ -305,6 +305,34 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   The geoid intentionally has no monolithic collision: current Fortis structures remain on their real
   authored foundations, while curvature-conforming streamed terrain/collision is the next layer.
 
+- **2026-06-19 — First remote surface destination (Builder: Codex).** Built the first real place to
+  fly **to and from**, directly along the gunship's existing +X heading. Authored from scratch in
+  `_authoring/make_remote_surface_site.py`: (1) a 2×2 km spherical terrain cap whose vertices use the
+  exact local equation `z = sqrt(R²-x²-y²)-R` for the 6,360 km body, with a closed coarse UCX collision
+  cap; and (2) an 80×80 m steel landing deck with physical supports, raised emissive edge/cross
+  markings, an armored survey shelter, and a 45 m truss navigation tower with modeled beacon lens and
+  UCX collision. Assets:
+  `/Game/Curtis/Meshes/Celestial/SurfaceSites/SM_SYL_RemoteTerrainPatch_01` and
+  `SM_SYL_RemoteLandingSite_01`. Terrain is 4,225 vertices / 8,192 triangles; infrastructure is 2,328
+  vertices / 1,184 triangles.
+
+  Created data-driven `/Game/Curtis/Blueprints/World/BP_SYL_SurfaceSite` (site name, arc distance,
+  bearing, planet radius), containing the terrain, infrastructure, a real inverse-square tower beacon,
+  and four inverse-square red pad lamps tied physically to the raised red corner markings. Placed
+  `SYL_SurfaceSite_A01` at **2,000 m arc distance along +X**: world
+  **(199,999.9967, 0, -31.4465 cm)**, pitch **−0.01801754°**, so its local up is the world's radial
+  normal rather than global +Z. It remains a normal spatially-loaded World Partition actor.
+
+  Collision proof: a radial trace over the deck hit at 9,769 cm from a 100 m start; a trace 500 m
+  off-center hit the curved terrain at 4,999.9917 cm vs 5,000 cm expected. Touchdown proof: temporarily
+  placed the real gunship above the remote pad and let radial gravity settle for 6 s; it stopped at
+  **287.0 cm radial altitude**, only **0.009 cm tangential offset**, pitch −0.018039° vs site
+  −0.018018°. Restored the saved ship home at (4500,0,130); five-second home PIE still settles at
+  ~(4500,0,138.36147), 0/0/0. Checkpoint `_codex_remote_surface_site_pad.png` (gitignored) shows the
+  illuminated physical deck. **Player route:** launch from the apron and fly straight +X/W for ~1.95 km;
+  acquire the 45 m red beacon, then land on the lit square pad. Jaron's round-trip will now reveal the
+  first real cruise-speed, beacon-range, approach, and landing-feel requirements.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -312,22 +340,20 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **Jaron re-test the cockpit view + roll** (2026-06-19 follow-up): seated first-person should now look
-   cleanly out the windscreen (no body/panel blocking); **A/D roll** should let you flip back upright after
-   a tilt. Report if the canopy cam height/angle is good and whether manual leveling needs a stabilize
-   assist. ChaseCam (press **C**) distance/angle feedback still welcome.
-2. Tune cockpit first-person flight feel with Jaron: thrust, pitch/yaw authority, camera position, and
-   landing response. Add roll/strafe only as physically supported controls. (Tunable magnitudes live in
-   BP_SYL_Ship EventTick: thrust 2000/-1500, lift ±1900/-1100, yaw ±140, pitch ±95; cam FOV/offsets on
-   CockpitCam/ChaseCam.) Optional: add camera lag on ChaseCam (SpringArm) and a free-look modifier key.
+1. **Jaron first real round-trip:** from the home apron, launch and fly straight **+X / hold W** about
+   1.95 km to `SYL_SurfaceSite_A01`; acquire the 45 m red beacon and land on the illuminated square pad,
+   then return. Report cruise time, beacon acquisition distance, approach visibility, and touchdown feel.
+2. Tune travel/landing only from that route evidence: current thrust/damping may make the 2 km leg too
+   slow. Preserve one physical body/ship and real acceleration; do not add teleport, map-cut, or fake
+   cruise. Camera/authority feedback can be handled in the same evidence-based pass.
 3. Mouse-look on foot is DONE (polling-based), pitch set NON-inverted (mouse up = look up, FPS-standard;
    `AddControllerPitchInput(-DeltaY)`) per Jaron's test. Remaining input polish: tune mouse sensitivity
    with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,
    preserving the same body/seat/ship state model. (Per Jaron 2026-06-19, planet + home arcs go to Codex.)
-4. **Real space arc IN PROGRESS (Codex):** true-scale 6,360 km round geoid, data-driven body parameters,
-   and inverse-square radial ship gravity are DONE. Next: build curvature-conforming streamed surface
-   terrain/collision plus the first remote physical landing site, then radial character orientation,
-   atmosphere-transition verification, and LWC travel/orbit. Never use a flat-zone or sky-sphere fake.
+4. **Real space arc IN PROGRESS (Codex):** true-scale geoid, data-driven body, inverse-square ship
+   gravity, curvature-conforming terrain/collision, and the first remote landing site are DONE. Next:
+   radial character orientation, atmosphere-transition verification, then LWC travel/orbit. Never use
+   a flat-zone or sky-sphere fake.
 5. Secondary world work: roads/ground detailing, walkable building interiors, construction animation,
    station district, physical needs/health, hostile incursion loop.
 

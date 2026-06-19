@@ -124,8 +124,15 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
   Six-second home settle remains ~(4500,0,138.36147), rotation 0/0/0. A 100 km off-axis PIE probe moved
   with cosine 1.0 toward the world center. Both Blueprints compile warnings-as-errors.
 - The geoid is the continuous round body/orbital silhouette and deliberately has no monolithic collision.
-  **Next lane:** streamed curvature-conforming terrain/collision and the first remote physical landing
-  site, then radial character orientation. Do not flesh out Fortis interiors before planetary environment.
+  `BP_SYL_SurfaceSite` now supplies streamed local terrain/collision. `SYL_SurfaceSite_A01` is the first
+  remote destination: 2 km arc-distance straight +X from home at (199,999.9967,0,-31.4465), pitched
+  −0.01801754° to radial up. It has a 2×2 km exact spherical cap, 80×80 m deck, shelter, 45 m red beacon,
+  and physical red pad lighting. Source: `_authoring/make_remote_surface_site.py`; assets under
+  `/Game/Curtis/Meshes/Celestial/SurfaceSites`.
+- Automated remote touchdown passed: deck/terrain radial traces hit correctly; the ship settled at
+  287.0 cm radial altitude with 0.009 cm tangential drift and matched site pitch. Home settle remains
+  unchanged. **Next action is Jaron's round-trip:** launch from apron, hold W/+X ~1.95 km, acquire beacon,
+  land, and return. Use that evidence before tuning cruise or landing. Then build radial character up.
 
 - **Pilot camera system added to `BP_SYL_Ship`.** Two CameraComponents: `CockpitCam` (child of
   `SeatAnchor`, rel (10,0,64), FOV 95, first-person, AutoActivate) and the reused `ChaseCam` (child of
