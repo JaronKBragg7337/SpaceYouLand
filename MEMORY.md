@@ -53,3 +53,11 @@ SetViewTargetWithBlend, with **C** toggling first/third person while seated; on-
 the arrow keys steer ONLY the ship while seated (head-look no longer fights the ship). Awaiting Jaron's
 flight feel-test (camera placement + steering). Open-space motion reference (the "void") is deferred to
 the real space arc (stars/planets); near home the chase cam gives reference against the apron/outpost.
+
+Jaron has since confirmed controls are good for now. The real planet lane has begun: a data-driven,
+true-scale 6,360 km-radius `BP_SYL_CelestialWorld` is centered 6,360 km beneath the origin, aligned with
+the existing real SkyAtmosphere radius/height. The gunship reads that actor's radius and 9.80665 m/s²
+surface acceleration and applies inverse-square radial gravity; an off-axis automated probe confirmed
+force points exactly toward the body center. The continuous geoid is authored from scratch and always
+loaded, but does not pretend to be local terrain: streamed curvature-conforming terrain/collision and a
+remote landing site are next, followed by radial character orientation.

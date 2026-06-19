@@ -281,6 +281,30 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   asset migration** (IA_/IMC_ assets, EnhancedInputAction events, ship-input rebind) remains a larger
   follow-up if desired; the SYL project currently has only Variant_* input assets, no IA_Move/IA_Look/IMC.
 
+- **2026-06-19 — True-scale world body + radial ship gravity (Builder: Codex).** Began the real
+  planet/space lane after Jaron confirmed controls are good until there are destinations. Authored a
+  reusable one-metre-radius, 256×128 smooth unit geoid from scratch in Blender
+  (`_authoring/make_celestial_body.py`) and imported it as
+  `/Game/Curtis/Meshes/Celestial/SM_SYL_UnitGeoid`, with the new physically rough
+  `/Game/Curtis/Materials/Celestial/M_SYL_World_Surface`. Created the data-driven actor
+  `/Game/Curtis/Blueprints/World/BP_SYL_CelestialWorld` with editable body name, radius, surface
+  gravity, atmosphere height, sidereal rotation, and axial tilt. Placed `SYL_ReferenceWorld_01` at
+  **(0,0,-636,000,000 cm)** with **6,360,000 m radius**, exactly matching the existing Unreal
+  SkyAtmosphere's real 6,360 km bottom radius and 60 km atmosphere. The body is non-spatially-loaded
+  so its geoid/gravity source remains present across World Partition cells.
+
+  Added `GravityBody` to `BP_SYL_Ship` and assigned the placed world actor. When valid, BeginPlay
+  disables Chaos's global-down gravity on the Hull; Tick applies acceleration-change force toward the
+  body's live actor center using **g(r) = 9.80665 × (6,360,000 m / r)^2**, reading radius and surface
+  acceleration from the body actor. If no body is assigned, the old global gravity remains as a safe
+  fallback. Blueprint compiled warnings-as-errors. Six-second PIE regression: ship still settled at
+  ~(4500,0,138.36147), exact rotation 0/0/0. A second PIE test temporarily placed it 100 km off the
+  north-axis tangent; displacement was (-0.683,0,-43.416) cm with **1.0 cosine alignment** to the
+  world center, proving gravity is radial rather than disguised global -Z. Orbital capture shows the
+  true curved geoid/atmospheric limb (`_codex_reference_world_orbit_north.png`, gitignored scratch).
+  The geoid intentionally has no monolithic collision: current Fortis structures remain on their real
+  authored foundations, while curvature-conforming streamed terrain/collision is the next layer.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -300,8 +324,10 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
    `AddControllerPitchInput(-DeltaY)`) per Jaron's test. Remaining input polish: tune mouse sensitivity
    with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,
    preserving the same body/seat/ship state model. (Per Jaron 2026-06-19, planet + home arcs go to Codex.)
-4. Continue the real space arc: atmosphere transition, LWC true-scale travel/orbit, radial gravity and
-   round planets. Build small→full in real units—never a flat-zone or sky-sphere fake.
+4. **Real space arc IN PROGRESS (Codex):** true-scale 6,360 km round geoid, data-driven body parameters,
+   and inverse-square radial ship gravity are DONE. Next: build curvature-conforming streamed surface
+   terrain/collision plus the first remote physical landing site, then radial character orientation,
+   atmosphere-transition verification, and LWC travel/orbit. Never use a flat-zone or sky-sphere fake.
 5. Secondary world work: roads/ground detailing, walkable building interiors, construction animation,
    station district, physical needs/health, hostile incursion loop.
 

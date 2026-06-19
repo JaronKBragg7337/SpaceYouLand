@@ -112,13 +112,20 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
 - **Loop discipline:** ONE coherent chunk per pass; save + append BUILDLOG + checkpoint screenshot + git push each pass;
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
-## 11. Current cross-agent handoff (2026-06-19, Builder: Claude)
-- **PAUSE point (Claude hit session usage limit).** Controls lane is in a good state: walkable + flyable
-  gunship, pilot cameras (C toggle), full 3-axis flight (A/D roll), and non-inverted on-foot mouse-look.
-  **Codex's next lane = start the real planet/space arc** (real round body + radial gravity, no fakes; see
-  memory `syl-build-direction` and Next-up item 4). The planet should exist BEFORE Fortis base interiors
-  are designed (base look depends on the planet/environment — Jaron's call). Mouse sensitivity/feel is the
-  only small open tuning on the controls lane.
+## 11. Current cross-agent handoff (2026-06-19, Builder: Codex)
+- Jaron confirmed controls are good until there are real destinations. Codex started the planet lane:
+  `BP_SYL_CelestialWorld` now places a true-scale 6,360 km-radius reference world at
+  (0,0,-636,000,000 cm), aligned exactly with the level's existing 6,360 km / 60 km SkyAtmosphere.
+  Editable parameters: body name, radius, surface gravity, atmosphere height, sidereal rotation, axial
+  tilt. From-scratch geoid source: `_authoring/make_celestial_body.py`; UE mesh/material under
+  `/Game/Curtis/Meshes/Celestial` and `/Game/Curtis/Materials/Celestial`.
+- `BP_SYL_Ship.GravityBody` points to the placed world. Its Hull now uses inverse-square radial
+  acceleration read from that body; global-down gravity is disabled only when the body ref is valid.
+  Six-second home settle remains ~(4500,0,138.36147), rotation 0/0/0. A 100 km off-axis PIE probe moved
+  with cosine 1.0 toward the world center. Both Blueprints compile warnings-as-errors.
+- The geoid is the continuous round body/orbital silhouette and deliberately has no monolithic collision.
+  **Next lane:** streamed curvature-conforming terrain/collision and the first remote physical landing
+  site, then radial character orientation. Do not flesh out Fortis interiors before planetary environment.
 
 - **Pilot camera system added to `BP_SYL_Ship`.** Two CameraComponents: `CockpitCam` (child of
   `SeatAnchor`, rel (10,0,64), FOV 95, first-person, AutoActivate) and the reused `ChaseCam` (child of
