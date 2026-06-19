@@ -157,6 +157,20 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   ground along y=0: z 50→51→52→54 outpost→apron, no gaps (all within step height). Saved.
   (Walkway is a quick steel deck plate — upgrade to an authored road later if desired.)
 
+- **2026-06-18 — Playtest fixes 2 (Builder: Claude).** (a) **GLASS — fixed:** `M_Fortis_Glass` was
+  `BLEND_Translucent` but opacity **0.38** with a near-black tint → couldn't see out. Set opacity **0.12**,
+  lightened tint to pale glass (r0.08,g0.16,b0.22), recompiled. Windows are see-through now.
+  (b) **RAMP — diagnosed, NOT changed:** open angle is **−26°**, which leaves the ramp tip ~19 cm above
+  the apron (hinge world z≈192, apron deck ≈54 → 138 cm drop; ramp mesh ≈290 cm long). Geometry says it
+  should be **≈−31°** to touch down. Could NOT change it cleanly: the value lives in **3 literal nodes**
+  (`K2Node_CallFunction_109/268/423`, "Make Literal", Value=−26) feeding the ramp `Select` in
+  `BP_SYL_Ship`; `set_pin_value` couldn't target those pins, and a full `read_graph_dsl`→`write_graph_dsl`
+  rewrite is **blocked** because the read shorthand `(|SetbPilotSeated …)` for custom Blueprint variables
+  is not write-parseable. **Left Codex's graph UNTOUCHED and verified intact** (boarding still works).
+  Walkable for now (MaxStepHeight 55 steps the 19 cm lip).
+  **>> TODO for Codex (graph author): change ramp open pitch −26 → −31** (the 3 literal nodes, or re-emit
+  the Tick graph). Trivial in a Codex session since it owns the graph's variable handling.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
