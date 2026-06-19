@@ -113,6 +113,13 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
 ## 11. Current cross-agent handoff (2026-06-19, Builder: Claude)
+- **PAUSE point (Claude hit session usage limit).** Controls lane is in a good state: walkable + flyable
+  gunship, pilot cameras (C toggle), full 3-axis flight (A/D roll), and non-inverted on-foot mouse-look.
+  **Codex's next lane = start the real planet/space arc** (real round body + radial gravity, no fakes; see
+  memory `syl-build-direction` and Next-up item 4). The planet should exist BEFORE Fortis base interiors
+  are designed (base look depends on the planet/environment — Jaron's call). Mouse sensitivity/feel is the
+  only small open tuning on the controls lane.
+
 - **Pilot camera system added to `BP_SYL_Ship`.** Two CameraComponents: `CockpitCam` (child of
   `SeatAnchor`, rel (10,0,64), FOV 95, first-person, AutoActivate) and the reused `ChaseCam` (child of
   `Hull`, rel (-1300,0,480) pitch -12, FOV 90, third-person, AutoActivate OFF). Sitting blends the view

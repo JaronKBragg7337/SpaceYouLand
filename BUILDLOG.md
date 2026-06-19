@@ -296,7 +296,8 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
    landing response. Add roll/strafe only as physically supported controls. (Tunable magnitudes live in
    BP_SYL_Ship EventTick: thrust 2000/-1500, lift ±1900/-1100, yaw ±140, pitch ±95; cam FOV/offsets on
    CockpitCam/ChaseCam.) Optional: add camera lag on ChaseCam (SpringArm) and a free-look modifier key.
-3. Mouse-look on foot is DONE (polling-based). Remaining input polish: tune mouse sensitivity / pitch sign
+3. Mouse-look on foot is DONE (polling-based), pitch set NON-inverted (mouse up = look up, FPS-standard;
+   `AddControllerPitchInput(-DeltaY)`) per Jaron's test. Remaining input polish: tune mouse sensitivity
    with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,
    preserving the same body/seat/ship state model. (Per Jaron 2026-06-19, planet + home arcs go to Codex.)
 4. Continue the real space arc: atmosphere transition, LWC true-scale travel/orbit, radial gravity and
