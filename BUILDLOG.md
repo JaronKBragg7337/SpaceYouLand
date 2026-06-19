@@ -148,6 +148,15 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   `_codex_walkable_ship_exterior.png`, `_codex_walkable_ship_interior.png`,
   `_codex_walkable_ship_apron_pie.png` (ignored scratch captures, not committed).
 
+- **2026-06-18 — Playtest fixes (Builder: Claude).** From Jaron's first boarding playtest: (1) couldn't
+  jump and hit a step he couldn't clear → added **Space = Jump** (`Character|Jump`) to `BP_SYL_Player`
+  EventTick (preserved Codex's empty BeginPlay/Overlap events); raised `CharMoveComp` **MaxStepHeight 55**,
+  **JumpZVelocity 520**. (2) spawn (outpost) and the east apron weren't connected → **opened the east wall**
+  (removed `Fortis_WallPanel_03` @ (1500,0)) and laid a steel walkway `Fortis_ApronWalkway_01` (deck plate)
+  bridging the foundation to the apron west edge at deck height. **Trace-verified** continuous walkable
+  ground along y=0: z 50→51→52→54 outpost→apron, no gaps (all within step height). Saved.
+  (Walkway is a quick steel deck plate — upgrade to an authored road later if desired.)
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
