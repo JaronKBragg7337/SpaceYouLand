@@ -42,10 +42,14 @@ first playable faction slice: armored, practical, militarized, and physically le
    secrets or personal data.
 5. The next agent resumes the first current item under BUILDLOG **Next up**, not an older stale plan.
 
-## Current reality (2026-06-18)
+## Current reality (2026-06-19)
 
 Fortis outpost and bespoke prop kit exist at the origin. A 36×28 m clear development apron sits east
 of the walls at (4500,0). The modular Fortis gunship is walkable, uses the same player body for its
 physical pilot seat, has an animated pressure door/ramp, and flies through real Chaos force/torque.
-Jaron's first full boarding/flight/exit playtest passed apart from ramp touchdown and forward visibility;
-both are now corrected (−31° open ramp, eye-level windscreen) and await his quick confirmation.
+Ramp touchdown (−31°) and the eye-level windscreen are confirmed good by Jaron. The gunship now has a
+pilot camera system: a first-person CockpitCam and a third-person ChaseCam, switched on sit/stand via
+SetViewTargetWithBlend, with **C** toggling first/third person while seated; on-foot input is gated so
+the arrow keys steer ONLY the ship while seated (head-look no longer fights the ship). Awaiting Jaron's
+flight feel-test (camera placement + steering). Open-space motion reference (the "void") is deferred to
+the real space arc (stars/planets); near home the chase cam gives reference against the apron/outpost.

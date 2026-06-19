@@ -209,6 +209,33 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   Partition ship reconstructed with both prompt meshes, correct transforms, and hidden defaults. Scratch
   evidence: `_codex_physical_ramp_prompt.png`, `_codex_physical_pilot_prompt.png` (gitignored).
 
+- **2026-06-19 — Pilot camera system + look/steer decouple (Builder: Claude).** From Jaron's first flight
+  test: while seated the arrow keys fought over BOTH his head-look (BP_SYL_Player) AND the ship yaw/pitch
+  (BP_SYL_Ship), so his view spun while the ship barely turned; and with the bare apron/void there was no
+  way to tell he was moving or turning. Fixes, all structural (no screen UI, no possession swap):
+  (1) **First/third-person ship cameras.** Reused the pre-existing unused `ChaseCam` CameraComponent
+  (parented to `Hull`, rel (-1300,0,480) pitch -12, FOV 90 — third-person chase) and authored a new
+  `CockpitCam` CameraComponent parented to `SeatAnchor` at rel (10,0,64) FOV 95 (seated eye, faces +X
+  through the windscreen). `CockpitCam.bAutoActivate=true`, `ChaseCam.bAutoActivate=false`.
+  (2) **View-target switching** via `Game|Player|SetViewTargetwithBlend` (0.25 s Cubic): sitting blends the
+  player camera → the ship actor (uses its active camera component); standing blends back to the player
+  body. Because both ship cams ignore controller rotation and rigidly follow the Hull, the pilot now SEES
+  the ship bank/yaw (cockpit turns with it; chase shows the whole hull turning) — fixing "is my ship
+  actually turning / am I moving."
+  (3) **`C` toggles first/third person** while seated (latched on `bViewLatch`): flips new bool
+  `bThirdPerson` and `Components|Activation|SetActive` on the two cams (exactly one active at a time).
+  (4) **Head-look no longer fights the ship.** BP_SYL_Player EventTick now gates ALL on-foot input
+  (WASD/arrows/jump) behind `Utilities|IsValid(GetAttachParentActor)=invalid` — i.e. it only runs when the
+  body is NOT attached to the ship. While seated the body is attached to `SeatAnchor`, so arrows drive ONLY
+  the ship; control rotation freezes at the sit pose, so standing back up faces a sane direction.
+  New ship vars: `bThirdPerson`, `bViewLatch`. Both Blueprints compiled with warnings-as-errors. 5 s PIE
+  regression: ship still settles level at (4500,0,138.36), rotation 0/0/0 — no physics regression from the
+  added (non-colliding) cameras. **Jaron to feel-test:** board, fly, and press **C** to swap first/third
+  person; confirm arrows now steer the ship cleanly without the head spinning. NOTE: the open-space "void"
+  (no motion reference once away from the outpost) is inherent until the real space arc adds stars/planets;
+  near home the chase cam against the apron/outpost now gives clear motion reference. Minor known edge: if
+  you release `C` while standing, the next sit needs one throwaway `C` press to re-arm the latch.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -216,11 +243,14 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **Jaron re-test the two corrected details:** open the ramp and confirm its tip now meets the apron;
-   sit in the pilot seat and confirm the rebuilt eye-level windscreen gives a clear forward view. The
-   full door → ramp → seat → flight → land → stand → exit loop otherwise passed Jaron's first playtest.
+1. **Jaron feel-test the new pilot camera/controls** (2026-06-19 pass): board, fly, press **C** to swap
+   first/third person, and confirm arrows now steer the ship cleanly without the head spinning. Report:
+   does CockpitCam sit at a good eye height through the windscreen? Is ChaseCam distance/angle good? (Ramp
+   touchdown and eye-level windscreen from the prior pass were already confirmed "better now" by Jaron.)
 2. Tune cockpit first-person flight feel with Jaron: thrust, pitch/yaw authority, camera position, and
-   landing response. Add roll/strafe only as physically supported controls.
+   landing response. Add roll/strafe only as physically supported controls. (Tunable magnitudes live in
+   BP_SYL_Ship EventTick: thrust 2000/-1500, lift ±1900/-1100, yaw ±140, pitch ±95; cam FOV/offsets on
+   CockpitCam/ChaseCam.) Optional: add camera lag on ChaseCam (SpringArm) and a free-look modifier key.
 3. Replace polling with Enhanced Input + mouse look after the boarding loop is proven; preserve the same
    body/seat/ship state model.
 4. Continue the real space arc: atmosphere transition, LWC true-scale travel/orbit, radial gravity and

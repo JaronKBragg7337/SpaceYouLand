@@ -112,7 +112,25 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
 - **Loop discipline:** ONE coherent chunk per pass; save + append BUILDLOG + checkpoint screenshot + git push each pass;
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
-## 10. Current cross-agent handoff (2026-06-18, Builder: Codex)
+## 11. Current cross-agent handoff (2026-06-19, Builder: Claude)
+- **Pilot camera system added to `BP_SYL_Ship`.** Two CameraComponents: `CockpitCam` (child of
+  `SeatAnchor`, rel (10,0,64), FOV 95, first-person, AutoActivate) and the reused `ChaseCam` (child of
+  `Hull`, rel (-1300,0,480) pitch -12, FOV 90, third-person, AutoActivate OFF). Sitting blends the view
+  target to the ship actor (`SetViewTargetwithBlend`); standing blends back to the player body. **`C`**
+  toggles first/third person while seated via new bool vars `bThirdPerson` + `bViewLatch` (latched) and
+  `Components|Activation|SetActive` (exactly one cam active).
+- **`BP_SYL_Player` EventTick now gates all on-foot input** behind `Utilities|IsValid(GetAttachParentActor)
+  = Is Not Valid`. While seated the body is attached to `SeatAnchor` → arrows drive ONLY the ship, head no
+  longer fights it. Preserve this gate if you rewrite the player graph.
+- Ship flight tunables (EventTick): thrust 2000/-1500, lift ±1900/-1100, yaw ±140, pitch ±95. Camera feel
+  lives on the CockpitCam/ChaseCam component transforms + FOV. No possession swap was introduced; the
+  GameMode still spawns `BP_SYL_Player_C` on foot.
+- Verified: both BPs compile (warnings-as-errors); 5 s PIE settle unchanged at (4500,0,138.36) 0/0/0.
+- DSL gotcha confirmed this pass: `read_graph_dsl` exports member-var accessors as `|GetbPilotSeated`
+  (broken) — repair to `Variables|Default|GetPilotSeated` (the `b` is dropped) before any write-back. Also
+  **literals can't be `(bind …)`-ed** — inline numeric/bool literals instead of binding them.
+
+## 10. Prior cross-agent handoff (2026-06-18, Builder: Codex)
 - `BP_SYL_GameMode` spawns `BP_SYL_Player_C` on foot. Do not restore the "spawn as ship" shortcut.
 - `BP_SYL_Ship` keeps the same character body and attaches it to `SeatAnchor`; there is no possession
   swap. E controls door/seat/stand by proximity; flight forces run only while `bPilotSeated`.
