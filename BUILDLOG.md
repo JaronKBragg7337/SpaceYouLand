@@ -196,6 +196,19 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   ship still settles level at ~(4500,0,138.36), rotation 0/0/0. Scratch evidence:
   `_codex_pilot_windscreen_fixed.png`, `_codex_windscreen_front_fixed.png` (gitignored).
 
+- **2026-06-19 — Physical interaction panels (Builder: Codex).** Completed the next living TODO without
+  adding screen-space UI or possession shortcuts. Authored a real four-fastener armored panel kit in
+  `_authoring/make_interaction_panel.py`, with separate steel housing, emissive lens, and raised Blender
+  geometry for `E  RAMP` / `E  PILOT`; imported the four meshes under
+  `/Game/Curtis/Meshes/Gunship/Interaction`. Added door and seat panel components to `BP_SYL_Ship` and
+  extended its existing proximity state so each lens and physical label is visible only when the same
+  player body is within the real interaction radius and not seated. The labels sit in a separate lower
+  row from the lens after visual QA. Blueprint compiled with warnings-as-errors. Combined PIE tests passed
+  both reciprocal states (door on/seat off, then door off/seat on); the ship still settled after 5+ seconds
+  at ~(4500,0,138.36), rotation 0/0/0. Forced a clean level unload/reload and verified the saved World
+  Partition ship reconstructed with both prompt meshes, correct transforms, and hidden defaults. Scratch
+  evidence: `_codex_physical_ramp_prompt.png`, `_codex_physical_pilot_prompt.png` (gitignored).
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -206,15 +219,13 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 1. **Jaron re-test the two corrected details:** open the ramp and confirm its tip now meets the apron;
    sit in the pilot seat and confirm the rebuilt eye-level windscreen gives a clear forward view. The
    full door → ramp → seat → flight → land → stand → exit loop otherwise passed Jaron's first playtest.
-2. Add physical interaction feedback: small in-world prompts/indicator lights at the door control and
-   pilot seat, driven by actual proximity/state. No menu teleport and no ship possession shortcut.
-3. Tune cockpit first-person flight feel with Jaron: thrust, pitch/yaw authority, camera position, and
+2. Tune cockpit first-person flight feel with Jaron: thrust, pitch/yaw authority, camera position, and
    landing response. Add roll/strafe only as physically supported controls.
-4. Replace polling with Enhanced Input + mouse look after the boarding loop is proven; preserve the same
+3. Replace polling with Enhanced Input + mouse look after the boarding loop is proven; preserve the same
    body/seat/ship state model.
-5. Continue the real space arc: atmosphere transition, LWC true-scale travel/orbit, radial gravity and
+4. Continue the real space arc: atmosphere transition, LWC true-scale travel/orbit, radial gravity and
    round planets. Build small→full in real units—never a flat-zone or sky-sphere fake.
-6. Secondary world work: roads/ground detailing, walkable building interiors, construction animation,
+5. Secondary world work: roads/ground detailing, walkable building interiors, construction animation,
    station district, physical needs/health, hostile incursion loop.
 
 ## Signature
