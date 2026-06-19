@@ -333,6 +333,19 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   acquire the 45 m red beacon, then land on the lit square pad. Jaron's round-trip will now reveal the
   first real cruise-speed, beacon-range, approach, and landing-feel requirements.
 
+- **2026-06-19 — Planet is now landable on foot (Builder: Claude).** Jaron's planet test: on foot he fell
+  straight THROUGH the planet (and Codex's route assumed he was flying). Cause: the geoid mesh
+  `SM_SYL_UnitGeoid` (1 m UV-sphere scaled ~6.36e6× by `BP_SYL_CelestialWorld`) had **no collision
+  geometry**, so character capsule sweeps (which hit *simple* collision only) passed through — even though
+  the `Geoid` component was already `QueryAndPhysics` / `BlockAllDynamic`. Fix: `generate_convex_collisions`
+  on `SM_SYL_UnitGeoid` (1 hull, 64 verts) — a convex hull of a sphere is standable from outside, and over
+  the ~2 km test region the surface is effectively flat (drop ≈ d²/2r). PIE proof: spawned the player 30 m
+  up over open planet at (100000,0,3000); after 5 s it **rested at z≈81.8 cm with zero lateral drift** (no
+  fall-through, no sliding). Home/outpost unaffected (its decks sit above the geoid at z≈0). This is a
+  stopgap so Jaron can land/walk/test now; Codex's streamed curved terrain remains the proper surface.
+  **Still open for Codex:** planet *surface color/material* — the gray geoid is hard to tell from the
+  sun/sky; add land/water-style color variation so the surface reads and gives navigation landmarks.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
