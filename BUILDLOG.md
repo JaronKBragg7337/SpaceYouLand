@@ -171,6 +171,20 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   **>> TODO for Codex (graph author): change ramp open pitch −26 → −31** (the 3 literal nodes, or re-emit
   the Tick graph). Trivial in a Codex session since it owns the graph's variable handling.
 
+- **2026-06-18 — Cockpit windscreen fix (Builder: Claude).** Jaron: "still can't see out the windows…
+  two layers, something behind the glass." Root cause (diagnosed by capturing from the pilot eye @
+  world≈(4910,0,300)): the glass was authored at **z 2.52–3.02 m (roof height)** while the pilot eye is
+  ~1.7 m, and a solid **nose cap** (`box (6.3,0,1.33) size (.35,2.9,1.35)`) filled the forward view at eye
+  level — so the window was a thin ceiling slit. Fix: in `_authoring/make_walkable_gunship.py` lowered the
+  nose cap (now `(6.3,0,0.86) size (.35,2.9,.66)`) and rebuilt the glass as a **large raked windscreen at
+  eye level** (two wedges, x 4.45–6.28, z 1.15→2.6/2.0). Regenerated Exterior+Glass FBX, **deleted + re-
+  imported** them (import_file won't overwrite) — that nulled the mesh refs, so **re-linked StaticMesh on
+  both the placed instance AND the BP class** components (`Exterior_GEN_VARIABLE`, `Glass_GEN_VARIABLE`),
+  recompiled. Pilot-eye capture now shows sky through the windscreen. (The earlier glass-material opacity
+  tweak 0.38→0.12 was a red herring but is kept — clearer glass.) **Jaron to confirm from the seat in PIE.**
+  NOTE on pipeline: to revise a Codex/other mesh, edit its `_authoring/make_*.py`, re-run, then DELETE the
+  old asset before re-import (import_file errors on existing) and RE-LINK refs on instance + BP class.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,

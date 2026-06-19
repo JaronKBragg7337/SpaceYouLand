@@ -182,7 +182,7 @@ wedge(bm, 3.55, 6.55, -1.85, -1.5, 0.55, 3.15, 2.05)
 wedge(bm, 3.55, 6.55, 1.5, 1.85, 0.55, 3.15, 2.05)
 wedge(bm, 3.65, 6.65, -1.48, 1.48, 0.55, 0.92, 0.62)
 wedge(bm, 3.55, 6.3, -1.5, 1.5, 2.82, 3.18, 2.12)
-box(bm, (6.3, 0, 1.33), (0.35, 2.9, 1.35), 'Y', -8)
+box(bm, (6.3, 0, 0.86), (0.35, 2.9, 0.66), 'Y', -8)  # lowered nose cap: clears the windscreen at eye level
 # Rear pressure frame
 for sy in (-1.82, 1.82):
     box(bm, (-5.82, sy, 1.82), (0.4, 0.46, 2.95))
@@ -279,10 +279,9 @@ export_object(trim, "Fortis_Gunship_Trim.fbx")
 # Cockpit glazing as distinct material component.
 # ---------------------------------------------------------------------------
 bm = bmesh.new()
-wedge(bm, 4.05, 5.82, -1.37, -0.12, 2.52, 3.02, 2.08)
-wedge(bm, 4.05, 5.82, 0.12, 1.37, 2.52, 3.02, 2.08)
-box(bm, (4.75, -1.53, 2.33), (1.25, 0.055, 0.58), 'Y', -18)
-box(bm, (4.75, 1.53, 2.33), (1.25, 0.055, 0.58), 'Y', -18)
+# Large raked windscreen lowered to pilot eye level (~1.7 m) so you can see out.
+wedge(bm, 4.45, 6.28, -1.4, -0.07, 1.15, 2.6, 2.0)
+wedge(bm, 4.45, 6.28, 0.07, 1.4, 1.15, 2.6, 2.0)
 glass = finalize(bm, "SM_Fortis_Gunship_Glass", bevel=0.015)
 export_object(glass, "Fortis_Gunship_Glass.fbx")
 
