@@ -236,6 +236,22 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   near home the chase cam against the apron/outpost now gives clear motion reference. Minor known edge: if
   you release `C` while standing, the next sit needs one throwaway `C` press to re-arm the latch.
 
+- **2026-06-19 — Pilot camera/roll follow-up from Jaron's feel-test (Builder: Claude).** Jaron flew the
+  new system and reported: (a) seated first-person, a big object blocked the view + the `E PILOT` panel was
+  in frame; (b) no way to re-level after tilting sideways. Diagnosis via edit-mode `CaptureViewport` from
+  the cockpit pose: the seat-eye pose itself was clear, so the blocker is the **pilot's own character body**
+  (only present in PIE, attached at `SeatAnchor`). Fixes: (1) Moved `CockpitCam` forward to the canopy —
+  rel-to-SeatAnchor (55,0,48), pitch -6, FOV 95 (world ~(4965,0,296) with ship at (4500,0,130)). A probe
+  capture from there shows a wide, clean windscreen view (sky fills the frame, console glow at the bottom);
+  being forward of the body, the pilot mesh and the seat panel now sit behind the camera. (2) Added **roll
+  on A/D** (previously unbound while seated) — `AddTorqueInDegrees` ±90 about the hull forward vector — so
+  the pilot now has full 3-axis attitude control and can recover from any tilt. Ship compiled
+  warnings-as-errors; 5 s PIE settle unchanged at (4500,0,138.36) 0/0/0. **Seated flight controls now:**
+  W/S thrust fwd/back, Space/LeftCtrl up/down, Left/Right yaw, Up/Down pitch, **A/D roll**, **C** first/third
+  person, E stand. NOTE: manual re-leveling in open space is still real-hard (no global \"up\"); if Jaron
+  wants it easier, next pass can add a realistic reaction-wheel \"stabilize\" key (damp angular velocity /
+  hold-to-level near gravity) — flagged, not yet built.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -243,10 +259,10 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **Jaron feel-test the new pilot camera/controls** (2026-06-19 pass): board, fly, press **C** to swap
-   first/third person, and confirm arrows now steer the ship cleanly without the head spinning. Report:
-   does CockpitCam sit at a good eye height through the windscreen? Is ChaseCam distance/angle good? (Ramp
-   touchdown and eye-level windscreen from the prior pass were already confirmed "better now" by Jaron.)
+1. **Jaron re-test the cockpit view + roll** (2026-06-19 follow-up): seated first-person should now look
+   cleanly out the windscreen (no body/panel blocking); **A/D roll** should let you flip back upright after
+   a tilt. Report if the canopy cam height/angle is good and whether manual leveling needs a stabilize
+   assist. ChaseCam (press **C**) distance/angle feedback still welcome.
 2. Tune cockpit first-person flight feel with Jaron: thrust, pitch/yaw authority, camera position, and
    landing response. Add roll/strafe only as physically supported controls. (Tunable magnitudes live in
    BP_SYL_Ship EventTick: thrust 2000/-1500, lift ±1900/-1100, yaw ±140, pitch ±95; cam FOV/offsets on
