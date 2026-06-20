@@ -126,32 +126,40 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
 - **Loop discipline:** ONE coherent chunk per pass; save + append BUILDLOG + checkpoint screenshot + git push each pass;
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
-## 11. Current cross-agent handoff (2026-06-20 — CLEAN SLATE COMPLETE, Builder: Codex)
-> **★ LIVE TOP PRIORITY: BUILD REAL EARTH + MOON FIRST.** The old planet experiment is gone. Stay in this
-> UE 5.8 project; use Large World Coordinates plus reusable astronomical/local reference frames rather
-> than changing project templates. Build a data-driven, true-scale Earth, then a true-scale Moon at real
-> separation. Only after the bodies exist should Fortis, the apron, and the ship be seated on Earth's
-> measured spherical surface with radial up.
+## 11. Current cross-agent handoff (2026-06-20 — EARTH/MOON REFERENCE FOUNDATION, Builder: Codex)
+> **★ LIVE TOP PRIORITY: BUILD THE ONE LOCAL PHYSICAL EARTH SURFACE + GENERIC GRAVITY.** Stay in this UE
+> 5.8 project. The true-scale Earth/Moon geometry, sourced body data, and LWC transforms now exist. Their
+> distant shells are deliberately non-colliding. Next, put exactly one physical surface through Earth's
+> north opening, seat Fortis on it, and reconnect simulation to the reusable body data.
 
-- **Preserved:** Fortis outpost, development apron, `BP_SYL_Ship`, `BP_SYL_Player`, all gunship assets and
-  materials, and all `_authoring/make_*.py` sources.
-- **Deleted:** all four old celestial actors; `BP_SYL_CelestialWorld`, `BP_SYL_SurfaceSite`; every mesh under
-  `/Game/Curtis/Meshes/Celestial`; every material under `/Game/Curtis/Materials/Celestial`. Scene/asset
-  queries now return zero old celestial actors/assets.
-- **Brown layer proof:** downward traces at former home-open (1 km) and remote (2 km) locations are null.
-  The former remote-tower-height capture has no ground sheet; a straight-up capture is sky only. The old
-  sheet is deleted, not hidden. Scratch evidence: `_codex_clean_slate_old_tower_height.png`,
-  `_codex_clean_slate_look_up.png`.
-- **Distance visibility:** 62 standalone Fortis/Claude mesh components now have zero min/max distance,
-  `bNeverDistanceCull=true`, `bAllowCullDistanceVolume=false`. A 140 m labeled capture sees 80 actors and
-  renders the remaining Fortis/apron scene without a planet surface covering it:
-  `_codex_clean_slate_140m_labels.png` (gitignored).
-- **Ship transition:** removed only the deleted body's `GravityBody` variable/property nodes and radial
-  force branch. BeginPlay explicitly enables normal gravity until the new generic body interface exists;
-  all seat/door/ramp/camera/control logic remains. Ship/player compile warnings-as-errors. The saved ship
-  is at `(4500,0,130)` and six-second PIE settles at `(4500.000000,~0,138.361473)`, rotation 0/0/0.
-- **Next measured acceptance:** one visible-and-physical Earth surface at Fortis; base/open-ground traces
-  agree; looking up shows only sky; Fortis renders at 140 m; orbital view shows round Earth and Moon.
+- **Generic body asset:** `/Game/Curtis/Blueprints/World/BP_SYL_CelestialBody`; compiles with
+  warnings-as-errors. It has one `DistantShell` component plus 16 editable fields for identity, parent,
+  radii, mass, GM, rotation, tilt, orbit, atmosphere, surface-opening angle, and source revision, all in
+  explicit real units. This is the common data/reference-frame foundation for future planets and moons.
+- **From-scratch geometry:** `_authoring/make_celestial_body.py` generates one-metre meshes imported as
+  `/Game/Curtis/Meshes/Celestial/Bodies/SM_SYL_UnitBody_EarthOpenNorth` and
+  `SM_SYL_UnitBody_MoonFull`. Earth omits only the final **1.40625°** north polar cap, reserving that exact
+  opening for the future single local physical surface. Never fill it with both a coarse shell and a tile.
+- **Earth instance:** `SYL_Earth_Reference_01`, center `(0,0,-635675200 cm)`, scale
+  `(6378137,6378137,6356752)` from the one-metre mesh = 6378.137 km equatorial / 6356.752 km polar.
+- **Moon instance:** `SYL_Moon_Reference_01`, center `(38440000000,0,-635675200 cm)`, scale
+  `(1737400,1737400,1737400)` = 1737.4 km radius. Exact Earth/Moon center separation: **384,400 km**.
+- **Authority:** NASA/JPL Horizons target 399 and 301 physical parameters, with the source/revision stored
+  on each actor. Mean-albedo materials use measured aggregate 0.367 Earth / 0.12 Moon values; they do not
+  invent geography. Epic's UE 5.8 LWC documentation supports 64-bit coordinates and an 88-million-km
+  default world extent, so this project is already the correct type for realistic solar-system scale.
+- **Rendering/physics boundary:** both reference actors are always loaded; shells use `NoCollision`, zero
+  min/max draw distance, `bNeverDistanceCull=true`, `bAllowCullDistanceVolume=false`. They are true-size
+  geometry/data references, not collision ground. Live inverse-square gravity still needs to be wired.
+- **Verification:** clean level reload returned every transform/data field exactly; Earth/Moon BP compiles;
+  traces at the former 1 km/2 km brown layers remain null; six-second PIE ship settle remains
+  `(4500.000000,~0,138.361473)`, rotation 0/0/0. Captures:
+  `_codex_earth_true_scale_orbit.png`, `_codex_moon_true_scale_orbit.png`,
+  `_codex_earth_moon_true_scale_system.png` (gitignored scratch).
+- **Next measured acceptance:** one local visible-and-physical WGS84 Earth surface; Fortis/apron/ship seated
+  with radial up; base and open-ground traces agree; looking up shows only sky; old tower band stays clear;
+  Fortis renders at 140 m; ship settles under generic inverse-square Earth gravity; far view retains Earth
+  and Moon. Bind atmosphere to the same body only after this geometry/physics acceptance passes.
 
 - **Pilot camera system added to `BP_SYL_Ship`.** Two CameraComponents: `CockpitCam` (child of
   `SeatAnchor`, rel (10,0,64), FOV 95, first-person, AutoActivate) and the reused `ChaseCam` (child of

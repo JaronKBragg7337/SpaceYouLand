@@ -527,6 +527,40 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   `(4500,0,130)`; after a clean level reload and six-second PIE it settled at
   **(4500.000000, ~0, 138.361473), rotation 0/0/0**.
 
+- **2026-06-20 — True-scale Earth + Moon reference foundation (Builder: Codex).** Authored both body
+  meshes from scratch in Blender with `_authoring/make_celestial_body.py`; no premade sphere asset is
+  used. Imported one-metre unit meshes at
+  `/Game/Curtis/Meshes/Celestial/Bodies/SM_SYL_UnitBody_EarthOpenNorth` and
+  `SM_SYL_UnitBody_MoonFull`, then created reusable
+  `/Game/Curtis/Blueprints/World/BP_SYL_CelestialBody`. Its 16 editable fields store body identity,
+  parent, radii, mass, GM, rotation, axial tilt, orbit, atmosphere, surface-opening angle, and source
+  revision in explicit km/kg/rad/s/hour units. The Blueprint compiles with warnings-as-errors.
+
+  Placed `SYL_Earth_Reference_01` at `(0,0,-635675200 cm)`, scaled from the one-metre mesh to the
+  WGS84/JPL ellipsoid radii **6378.137 km equatorial / 6356.752 km polar**. Placed
+  `SYL_Moon_Reference_01` at `(38440000000,0,-635675200 cm)` with radius **1737.4 km**. Their measured
+  center separation is exactly **38,440,000,000 cm = 384,400 km**. Both actors are always loaded and
+  their distant shells are explicitly `NoCollision`, never distance-culled. Earth uses a precisely
+  **1.40625° north-polar opening** (the last UV cap only) so the future one visible-and-physical local
+  Earth surface can occupy the Fortis region without putting a second global shell beneath it; the Moon
+  shell is complete. Mean-albedo reference materials are measured aggregate values, not fabricated
+  geography: Earth 0.367, Moon 0.12.
+
+  Source authority is NASA/JPL Horizons physical data: targets 399 (Earth, revised 2022-05-09) and 301
+  (Moon, revised 2013-07-31). Stored values include Earth GM 398600.435436 km^3/s^2, mass
+  5.97219e24 kg, sidereal period 23.9344695944 h, obliquity 23.4392911°; Moon GM 4902.800066 km^3/s^2,
+  mass 7.349e22 kg, sidereal period 655.717968 h, orbital eccentricity 0.05490, and tilt 6.67°.
+  Epic's UE 5.8 LWC documentation confirms 64-bit coordinates and an 88-million-km default world extent,
+  so this remains the same project; no new template/project is needed for realistic planets.
+
+  Clean-reload verification read every stored value and transform back correctly. Down-traces through
+  the former brown layer at 1 km and 2 km remain null. A six-second PIE regression leaves the ship at
+  `(4500.000000,~0,138.361473)`, exact rotation 0/0/0, proving the new non-colliding shells do not disturb
+  the apron. Scratch evidence: `_codex_earth_true_scale_orbit.png`,
+  `_codex_moon_true_scale_orbit.png`, `_codex_earth_moon_true_scale_system.png` (gitignored). This chunk
+  establishes exact geometry + body data/reference frames; live inverse-square gravity and the single
+  local physical Earth surface are deliberately the next coherent chunk, not claimed complete here.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -534,16 +568,16 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **★ TOP PRIORITY (CODEX) — REAL EARTH + MOON FOUNDATION.** The old celestial experiment is fully gone;
-   do not restore its geoid/cap/tile stack. In this same UE 5.8 project, build a reusable data-driven body
-   model using real units and Large World Coordinates/reference frames. Instantiate a true-scale Earth
-   first, then a true-scale Moon at real separation. The bodies must be physical simulation sources, not
-   distant-sphere sky props. Keep body identity/parameters swappable for the future solar system.
-2. **THEN seat Fortis and the gunship ON Earth.** Build exactly one visible-and-physical local Earth surface,
-   place the outpost/apron/ship at a measured spherical coordinate with radial up, reconnect the ship to the
-   new generic gravity interface, and add radial character orientation. Acceptance: one down-trace surface,
-   only sky looking up, Fortis visibly rendered from 140 m, and a far view showing round Earth + the Moon.
-   After that, verify atmosphere transition and extend into LWC travel/orbit.
+1. **★ TOP PRIORITY (CODEX) — ONE PHYSICAL EARTH SURFACE + GENERIC GRAVITY.** The reusable true-scale Earth
+   and Moon reference bodies now exist at real radii/separation with sourced data, but their shells are
+   intentionally non-colliding and do not yet exert live force. Build exactly one visible-and-physical local
+   Earth surface through the 1.40625° north opening; seat Fortis/apron/ship on it at a measured WGS84
+   coordinate with radial up; make `BP_SYL_CelestialBody` the generic inverse-square gravity source; reconnect
+   the ship and add radial character orientation. Never restore the old geoid/cap/tile stack.
+2. **MEASURED ACCEPTANCE.** One down-trace surface (base and open ground agree), only sky looking up, no
+   brown layer at the old tower band, Fortis rendered from 140 m, ship settles level under Earth gravity,
+   and a far view shows round Earth + Moon. Then bind the atmosphere model to the same Earth data and extend
+   into reference-frame-aware LWC travel/orbit.
 3. Mouse-look on foot is DONE (polling-based), pitch set NON-inverted (mouse up = look up, FPS-standard;
    `AddControllerPitchInput(-DeltaY)`) per Jaron's test. Remaining input polish: tune mouse sensitivity
    with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,
