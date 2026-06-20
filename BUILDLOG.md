@@ -438,6 +438,23 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   if Jaron still sees layering on a FRESH test, capture his exact camera pose/altitude and chase it there.
   STILL OPEN (real): surface is uniform brown — the color/landmark/navigation request is unaddressed.
 
+- **2026-06-19 — "Two layers" at the remote site DIAGNOSED: it is NOT geometry (Builder: Claude).** Jaron's
+  decisive screenshots (above the remote tower → only the lit tip shows, everything below "covered by a brown
+  layer"; at the tower base looking up → clear sky) localized the issue to the REMOTE site (2 km out), not
+  home. Measured live in PIE: a straight-down trace at the tower hits the cap at **−28.3 cm** (true sphere,
+  solid) and finds **NO collision geometry up high**; the coarse geoid and cap are concentric (apex z=0) and
+  the geoid sits *below* the cap out there. So there is **no second shell** — the structural planet is one
+  unified, solid surface and the bases sit on it. The "brown layer" is VISUAL: (1) `ExponentialHeightFog` was
+  `FogMaxOpacity=1.0`, `FogHeightFalloff=0.2`, density 0.035 — i.e. it could become FULLY opaque and reached
+  high, so looking *down* across distance it's a solid brown wall (tall tips poke through) while looking *up*
+  it's clear; softened to density 0.015 / falloff 1.0 / MaxOpacity 0.5 (saved). (2) The bigger cause: the
+  surface uses one **dark, untextured brown material** (`M_SYL_World_Surface`), so from altitude the ground,
+  haze, and the dark tower truss all blend into an ambiguous brown mass — reducing fog alone did NOT reveal
+  the tower, confirming the flat dark surface is the main culprit. **THE REAL FIX (next, was always open):
+  give the planet surface real color/lightness/variation (land/water-style)** so it reads as terrain with
+  landmarks; that dissolves the "layer" illusion. Apply via the shared `M_SYL_World_Surface` (cap + geoid use
+  it) so one shader changes the whole planet — forward-compatible per the multi-planet vision.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
