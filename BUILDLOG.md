@@ -509,11 +509,14 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **★ TOP PRIORITY — Jaron re-test the one-surface planet:** repeat the view/fall-through checks from
-   the three screenshots, then fly home→remote→home. Confirm there is no brown pass-through shell, no
-   giant rectangular terrain shelves, and both sites remain visible on the same ground from altitude.
-   Record real cruise time, beacon range, approach readability, and touchdown feel. Tune real forces and
-   physical lighting only from that evidence; no teleport, map cut, or fake cruise.
+1. **★ TOP PRIORITY (CODEX) — CLEAN-SLATE PLANET REBUILD (Jaron's decision, 2026-06-20).** The iterative
+   planet patches created a confusing draw-distance "layer" (PROVEN cause in the 2026-06-20 build entry).
+   Jaron wants a fresh start, not more patching. Full step-by-step plan is in **SESSION_HANDOFF.md §11 LIVE
+   TOP PRIORITY**: (a) PRESERVE ship + Fortis (and `_authoring/`), (b) WIPE the planet experiment to a blank
+   slate + clear any leftover max-draw-distance on the keepers, (c) build a real "Earth" planet in space + a
+   "Moon" a real distance away (planet-first principle), (d) seat Fortis/ship/buildings ON the Earth surface
+   (one surface, radial up). ACCEPTANCE is measured (140 m labeled capture renders the buildings; only sky
+   when looking up from open ground; round body + Moon visible from far). See MEMORY solar-system vision.
 2. **Real space arc IN PROGRESS (Codex):** build radial character orientation, verify the full atmosphere
    transition, then extend into LWC travel/orbit. The geoid is silhouette-only and playable terrain must
    use exact spherical LOD regions. The first physical/visual cap covers 156 km around home; extend this

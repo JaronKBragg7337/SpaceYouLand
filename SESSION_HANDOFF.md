@@ -126,12 +126,28 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
 - **Loop discipline:** ONE coherent chunk per pass; save + append BUILDLOG + checkpoint screenshot + git push each pass;
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
-## 11. Current cross-agent handoff (2026-06-19, Builder: Codex)
-> **★ LIVE TOP PRIORITY: JARON RE-TEST THE ONE-SURFACE PLANET.** His three screenshots showed the first
-> tile fix still rendered stacked layers: coarse brown geoid + dark rectangular local sheets. Codex has
-> now replaced the whole 156 km north-pole facet with one true spherical visual/physical cap and hidden
-> the rectangular tile renders. Repeat the same altitude/fall-through views, then fly home→remote→home.
-> Full evidence is in **BUILDLOG.md → One visible + physical planet surface**.
+## 11. Current cross-agent handoff (2026-06-20, decision by Jaron — CLEAN PLANET REBUILD, for Codex)
+> **★ LIVE TOP PRIORITY (CODEX): CLEAN-SLATE PLANET REBUILD per the build-order principle.** The iterative
+> planet attempts produced a confusing "brown layer" that hides the buildings from altitude. Claude PROVED
+> the buildings are loaded + in-frustum but draw-distance-culled at ~140 m (labeled CaptureViewport: 30
+> outpost actors in view, none drawn; not fog/shell/cull-volume/config — see BUILDLOG 2026-06-20 entry).
+> Jaron believes the underlying mess traces to an earlier Codex planet change and wants a fresh start
+> instead of more patching. **PLAN (Jaron's words):**
+> 1. **PRESERVE (store, do not lose):** the gunship/ship (`BP_SYL_Ship`, `BP_SYL_Player`, gunship meshes
+>    `/Game/Curtis/Meshes/Gunship`, materials) and the **Fortis** outpost (all `SM_Fortis_*` meshes + the
+>    apron). Keep all `_authoring/make_*.py`. These are the keepers.
+> 2. **WIPE the planet experiment from the level:** remove `BP_SYL_CelestialWorld` (geoid),
+>    `SYL_NorthPolarCap_01` + `SM_SYL_NorthPolarCap_01`, `SM_SYL_UnitGeoid`, all `SM_SYL_SurfaceTile_*`,
+>    `BP_SYL_SurfaceSite` + `SYL_SurfaceSite_A01` + remote-site meshes — i.e. blank slate (keep ship+Fortis).
+>    Also CLEAR any leftover **max-draw-distance / LDMaxDrawDistance** on the kept structures so they render
+>    from far (that is the proven "layer" cause — verify with a 140 m labeled capture afterward).
+> 3. **REBUILD planet-first (the principle):** make a real planet ("Earth") **in space**, and a SECOND planet
+>    ("Moon") a real distance away — two data-driven bodies you fly between (see MEMORY: solar-system vision).
+> 4. **THEN place things ON the planet:** seat Fortis, the ship, and buildings on the Earth surface at the
+>    correct spherical position with radial up. One visible+physical surface; no stacked shells.
+> ACCEPTANCE (measured): from 140 m up a labeled capture must render the buildings; looking up from open
+> ground shows only sky; the planet reads as one surface and a far view shows a round body + the Moon.
+> Claude was near its limit (resets ~1:30); Codex owns this rebuild.
 
 - New source: `_authoring/make_planet_nearfield_cap.py`. Active near-field planet asset:
   `/Game/Curtis/Meshes/Celestial/SurfaceLOD/SM_SYL_NorthPolarCap_01` (65,537 verts / 130,816 tris), placed
