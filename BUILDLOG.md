@@ -395,6 +395,34 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   graph edits; recovery was clean. Add/connect nodes, save the dirtied package, and let normal shader
   compilation run—checkpoint before any explicit recompile.
 
+- **2026-06-19 — One visible + physical planet surface; removed the stacked-layer read (Builder: Codex).**
+  Jaron's three flight screenshots proved the prior corridor fix solved local collision heights but not
+  the planet's visual LOD: the brown pass-through layer was the coarse `SM_SYL_UnitGeoid`; the dark giant
+  rectangles were the exact 2×4 km home/remote tiles; from below the coarse shell the real sites appeared
+  to float in open space. The tiles were mathematically correct but visually finite, while the geoid's
+  first pole facet spanned ~156 km and sat tens of metres away near the sites.
+
+  Authored `_authoring/make_planet_nearfield_cap.py` and imported
+  `/Game/Curtis/Meshes/Celestial/SurfaceLOD/SM_SYL_NorthPolarCap_01`: a true 6,360 km-radius spherical
+  cap with 65,537 vertices / 130,816 triangles. It replaces the entire coarse north-pole facet out to
+  the geoid's real first ring (**156.082 km radius, −1.916 km edge height**); the outer 256 vertices are
+  derived from Blender's actual unit-geoid ring so the LOD closes at the same geometry. The cap is
+  non-spatially-loaded and uses the exact same `M_SYL_World_Surface` material as the global geoid on all
+  sections, eliminating the circular material/platform boundary at altitude. The former home/remote
+  tile components are now hidden in rendering (their exact collision remains as local backup), so there
+  are no visible rectangular shelves.
+
+  Made the cap itself physical with `BodySetup.CollisionTraceFlag = CTF_UseComplexAsSimple`, double-sided
+  static collision, and `BlockAll`. Decisive PIE proof spawned the player 30 m above **(2000 m, 2200 m)**,
+  outside both former tile bounds: analytic spherical surface z was −69.4969 cm and the player settled at
+  z=20.3694 cm (surface + capsule), rather than falling through. At the same time the gunship remained at
+  **(4500.000007, 0, 138.361473)** with exact 0/0/0 rotation. Visual QA:
+  `_codex_planet_cap_remote_close.png` shows the beacon deck directly on continuous terrain;
+  `_codex_planet_cap_high_continuous.png` shows no cap/geoid layer boundary at 5 km-scale altitude; and
+  `_codex_planet_true_orbit.png` shows the real round globe/day-night limb from orbital distance. Reality
+  note: a 6,360 km-radius body correctly looks nearly flat from only a few kilometres up; roundness becomes
+  obvious at orbital distance, but separate shells/platform sheets must never appear.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -402,15 +430,15 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **★ TOP PRIORITY — Jaron's round-trip on the unified surface:** launch from the home apron, hold
-   W/+X for ~1.95 km, acquire the remote beacon, land on the lit deck, then return. Record real cruise
-   time, beacon range, approach readability, touchdown feel, and whether the new mineral regions provide
-   enough motion/navigation reference. Tune real force/torque and physical lighting from that evidence;
-   no teleport, map cut, or fake cruise.
+1. **★ TOP PRIORITY — Jaron re-test the one-surface planet:** repeat the view/fall-through checks from
+   the three screenshots, then fly home→remote→home. Confirm there is no brown pass-through shell, no
+   giant rectangular terrain shelves, and both sites remain visible on the same ground from altitude.
+   Record real cruise time, beacon range, approach readability, and touchdown feel. Tune real forces and
+   physical lighting only from that evidence; no teleport, map cut, or fake cruise.
 2. **Real space arc IN PROGRESS (Codex):** build radial character orientation, verify the full atmosphere
    transition, then extend into LWC travel/orbit. The geoid is silhouette-only and playable terrain must
-   come from exact streamed spherical tiles. Expand the tile system beyond this first 4 km corridor as
-   destinations require; never restore monolithic low-resolution geoid collision.
+   use exact spherical LOD regions. The first physical/visual cap covers 156 km around home; extend this
+   data-driven cap/tile model around future destinations rather than restoring coarse geoid collision.
 3. Mouse-look on foot is DONE (polling-based), pitch set NON-inverted (mouse up = look up, FPS-standard;
    `AddControllerPitchInput(-DeltaY)`) per Jaron's test. Remaining input polish: tune mouse sensitivity
    with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,

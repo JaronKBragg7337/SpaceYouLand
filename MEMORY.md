@@ -63,11 +63,12 @@ loaded, but does not pretend to be local terrain. Streamed local surface geometr
 layer; radial character orientation is next.
 
 The first destination now exists. `SYL_SurfaceSite_A01` is 2 km along the planet surface in the +X
-direction from home, placed and pitched from exact 6,360 km spherical coordinates. Home and remote now
-sit on neighboring 2×4 km streamed terrain tiles generated from the same sphere; their shared x=1 km
-edge matches the analytic world within 0.025 cm. Deterministic basalt, iron-rich, and pale-silicate
-material regions provide physical navigation landmarks. The coarse geoid has no collision and is only
-the distant/orbital silhouette; true streamed tiles own playable terrain/collision. The remote 80×80 m
-deck, shelter, 45 m beacon, and real pad lights remain intact. Six-second PIE still settles the ship at
-home with exact zero rotation. Jaron's next useful test is the full home→site→home flight; its real travel
-time, terrain readability, beacon range, approach, and touchdown should drive the next tuning pass.
+direction from home, placed and pitched from exact 6,360 km spherical coordinates. After Jaron's altitude
+screenshots exposed stacked visual layers, the world now has one always-loaded high-resolution north-pole
+cap covering 156.082 km and matching the global geoid's first ring. The cap is both visible and physical
+(`CTF_UseComplexAsSimple`); all of it and the distant geoid share one material. The old neighboring 2×4 km
+tiles remain hidden collision backups only, so they cannot appear as rectangular shelves. A PIE player
+spawn outside both tiles landed on the cap's analytic sphere instead of falling through. The remote
+80×80 m deck, shelter, 45 m beacon, and real pad lights remain intact, and the ship still settles at home
+with exact zero rotation. Jaron's next useful test is repeating the three screenshot views and the full
+home→site→home flight; its cruise time, beacon range, approach, and touchdown should drive the next pass.

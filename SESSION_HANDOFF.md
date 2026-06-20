@@ -117,17 +117,32 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
 ## 11. Current cross-agent handoff (2026-06-19, Builder: Codex)
-> **★ LIVE TOP PRIORITY: JARON'S ROUND-TRIP ON THE UNIFIED SURFACE.** The detached-platform issue is
-> resolved. Home and remote now share exact neighboring spherical terrain tiles with physical mineral
-> color regions; the coarse global geoid is silhouette-only again. Fly home→remote→home and use measured
-> cruise time, beacon visibility, approach, touchdown, and terrain readability before tuning forces or
-> lights. Full evidence and paths are in **BUILDLOG.md → 2026-06-19 Unified true surface corridor**.
+> **★ LIVE TOP PRIORITY: JARON RE-TEST THE ONE-SURFACE PLANET.** His three screenshots showed the first
+> tile fix still rendered stacked layers: coarse brown geoid + dark rectangular local sheets. Codex has
+> now replaced the whole 156 km north-pole facet with one true spherical visual/physical cap and hidden
+> the rectangular tile renders. Repeat the same altitude/fall-through views, then fly home→remote→home.
+> Full evidence is in **BUILDLOG.md → One visible + physical planet surface**.
+
+- New source: `_authoring/make_planet_nearfield_cap.py`. Active near-field planet asset:
+  `/Game/Curtis/Meshes/Celestial/SurfaceLOD/SM_SYL_NorthPolarCap_01` (65,537 verts / 130,816 tris), placed
+  at (0,0,0) as non-spatially-loaded `SYL_NorthPolarCap_01`. It is the exact 6,360 km sphere from the pole
+  to the coarse geoid's first matching 256-vertex ring, 156.082 km away. All cap slots and the geoid use
+  `M_SYL_World_Surface`, so there is no material ring that reads like another platform.
+- The cap is real static collision (`CTF_UseComplexAsSimple`, double-sided, BlockAll), not visual-only.
+  PIE outside both old tiles at (2000 m,2200 m) rested the player at z=20.3694 cm over analytic surface
+  z=−69.4969 cm. The ship simultaneously kept its exact home settle. This directly replaces the brown
+  pass-through layer Jaron photographed.
+- The 2×4 km Home_02/Remote_02 components still exist as hidden exact collision backups, but never render;
+  they must not appear as rectangular terrain shelves again. Close/high/orbit checkpoints:
+  `_codex_planet_cap_remote_close.png`, `_codex_planet_cap_high_continuous.png`,
+  `_codex_planet_true_orbit.png` (gitignored).
 
 - New source: `_authoring/make_surface_corridor.py`. Active assets:
   `/Game/Curtis/Meshes/Celestial/SurfaceTiles/SM_SYL_SurfaceTile_Home_02` and
-  `SM_SYL_SurfaceTile_Remote_02`; each is 2×4 km and uses the exact 6,360 km spherical equation. Home is
-  a World Partition static-mesh actor at (0,0,0); `BP_SYL_SurfaceSite.Terrain` uses the remote tile at the
-  existing 2 km arc transform. Their x=1 km seam matches the analytic sphere within 0.025 cm after reload.
+  `SM_SYL_SurfaceTile_Remote_02`; each is 2×4 km and uses the exact 6,360 km spherical equation. They are
+  now **render-hidden collision backups**. Home is a World Partition actor at (0,0,0);
+  `BP_SYL_SurfaceSite.Terrain` uses the remote tile at the existing 2 km arc transform. Their x=1 km seam
+  matches the analytic sphere within 0.025 cm after reload.
 - Terrain materials are `/Game/Curtis/Materials/Celestial/M_SYL_Terrain_{Basalt,IronRich,PaleSilicate}`.
   They are deterministic metre-space lithology sections authored in Blender, not screen UI or fake water.
   Close checkpoint: `_codex_unified_surface_remote_close_final.png` (gitignored).
