@@ -143,6 +143,18 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   the apex cone spans ~5.6 km — imperceptible slope; could densify rings near the pole later). NEXT: wire
   `BP_SYL_CelestialBody` as generic inverse-square gravity + reconnect ship; radial character orientation.
 
+- **2026-06-20 — Fix planet-surface bounce: normal-scale collision proxy (Builder: Claude).** Jaron walking
+  on the cap = everything bouncing/jittering. Cause: Chaos loses precision colliding against a mesh scaled
+  ~6.38e6× (true-scale planet). Standard fix applied: the giant visual cap (`SYL_EarthLocalSurface_North`)
+  is now `NoCollision` (visual only), and a separate NORMAL-scale (1×) invisible collision patch carries
+  physics — `_authoring/make_earth_local_collision.py` → `SM_SYL_EarthLocalCollision_North`, a ±20 km
+  curvature-correct grid (Earth polar radius of curvature Rc=6,399,594 m, edge drop 31 m), placed at the pole
+  `SYL_EarthLocalCollision_North` (loc 0,0,0; scale 1), invisible, always-loaded, `BlockAll` complex-as-simple.
+  Trace at 300 m hits it at z≈−1.2 cm (stable). NOTE/next: the visual cap's rings are evenly spaced over 1.4°
+  so its apex cone is coarse — near the base (±45 m) visual vs collision agree to ~2 cm, but the gap grows
+  (~12 cm at 300 m, ~36 cm at 1 km), so the character will look slightly raised far from base. Densifying the
+  visual cap's pole rings to match is the immediate next refinement. Jaron to confirm bounce is gone on foot.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
