@@ -17,8 +17,10 @@ import bpy
 ROOT = Path(__file__).resolve().parent
 FBX_PATH = ROOT / "SM_SYL_EarthLocalGround_Flat.fbx"
 
-HALF_M = 10000.0   # +/- 10 km flat pad (edge is well past the ~5 km eye-level horizon)
-SEG = 24           # light tessellation (flat; just helps lighting)
+HALF_M = 6000.0    # +/- 6 km flat pad (edge ~at the eye-level horizon)
+SEG = 160          # 75 m cells -> SMALL flat triangles = precise, stable collision
+                   # (the Fortis platform is stable because its triangles are small;
+                   #  huge triangles lose physics precision and bounce). FLAT, top at z=0.
 
 
 def clear_scene() -> None:

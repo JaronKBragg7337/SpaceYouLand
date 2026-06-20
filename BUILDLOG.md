@@ -161,15 +161,21 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   scale makes unstable Chaos contacts → violent depenetration. The float-vs-bounce trade (curved=bounce,
   flat-collision-under-curved-visual=float) is resolved by making the LOCAL ground genuinely FLAT and the
   VISIBLE surface: a real planet is imperceptibly flat for km (Earth curves ~8 m over 10 km). Authored
-  `_authoring/make_earth_local_ground.py` → `SM_SYL_EarthLocalGround_Flat` (±10 km flat pad), gave it SIMPLE
-  **convex/box** collision (rock-solid, no bounce), swapped it onto `SYL_EarthLocalCollision_North`
-  (renamed role: local ground), VISIBLE with the Earth material, `BlockAll`, lifted to z=10 cm so it cleanly
-  reads above the curved cap (no z-fight). So the player walks on AND sees the SAME flat box surface → no
-  bounce, no float. The big curved cap (`SYL_EarthLocalSurface_North`, NoCollision) still fills 10→156 km and
-  gives the round-from-orbit body. Trace at 3 km hits the pad at z=10 (flat). Capture: Fortis flush on smooth
-  flat ground to the horizon. Jaron to confirm bounce + ship-fall-through are gone (couldn't be verified
-  headlessly). Curved walkable terrain at scale (vs flat-local) is a deeper future task (Landscape / origin
-  rebasing). Supersedes the visible-patch entry below.
+  `_authoring/make_earth_local_ground.py`. ITERATED on the collision (couldn't feel-test headlessly): a
+  zero-thickness sheet + **convex** = degenerate (bounces); a solid box's top = **two ±10 km triangles** and
+  physics loses precision on huge triangles (bounces). FINAL: a **fine FLAT grid**
+  `SM_SYL_EarthLocalGround_Fine` (±6 km, 75 m cells → SMALL flat triangles, like the stable Fortis platform),
+  `CTF_UseComplexAsSimple`, swapped onto `SYL_EarthLocalCollision_North` (local-ground role), VISIBLE with the
+  Earth material, `BlockAll`, lifted z=10 cm above the curved cap (no z-fight). Player walks on AND sees the
+  SAME flat surface → no float; small flat triangles → precise contacts → should be no bounce. Curved cap
+  (`SYL_EarthLocalSurface_North`, NoCollision) fills 6→156 km for the round body. Trace at 2 km = z10.
+  **SHIP WALK-THROUGH:** ship BeginPlay collision profiles are INTACT (walls = BlockAllDynamic + QueryOnly),
+  so the walk-through is most likely the BOUNCE velocity tunnelling the character through the thin QueryOnly
+  walls (Jaron's timeline + his "same fix for both" intuition) → fixing the bounce should fix it. If Jaron
+  still passes through ship walls while STANDING STILL, that's a real collision-coverage gap (the
+  Left/Right/Roof/Nose collision boxes don't cover the cockpit-front) → patch with added collision boxes.
+  Jaron to confirm bounce + ship-fall-through. Curved walkable terrain at scale is a deeper future task.
+  Orphan ground assets `_Flat`/`_Box` are unused — delete later. Supersedes the visible-patch entry below.
 
 - **2026-06-20 — Fix "Fortis floating / invisible platform": made the collision patch the VISIBLE surface
   (Builder: Claude).** Jaron (sharp diagnosis): walking on an invisible platform while Fortis + ground
