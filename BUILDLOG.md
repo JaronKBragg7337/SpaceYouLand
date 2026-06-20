@@ -486,6 +486,22 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   primary far-navigation marker. Fog left light for atmosphere + visibility (density 0.006/falloff 1.4/
   MaxOpacity 0.35). Surface color/variation from the prior entry stands.
 
+- **2026-06-20 — PROVEN root cause of the "layer": structures are DRAW-DISTANCE culled (Builder: Claude).**
+  Definitive evidence via `CaptureViewport` with annotations from 140 m straight up over home: it labeled
+  **30 actors in-frustum** (outpost StaticMeshActors at z=0–9.6 m + their PointLights, all ~132–140 m from
+  camera) — yet the rendered image showed **none of them**, only the orange surface. Loaded + in-frustum +
+  not drawn = **max-draw-distance / screen-size culling**, NOT fog (proven: fog fully off still hid them),
+  NOT a geometry shell (trace finds nothing solid above; geoid/cap apex both z=0), NOT WP cell-unload (actors
+  are loaded), NOT a Cull Distance Volume (none in level), NOT a config cvar (`Config/` unchanged since the
+  initial commit). The beacon stays visible from any height because **lights/emissive have effectively
+  unlimited draw distance** while solid meshes cull — that's why only the glowing tip "pokes through." So
+  Jaron is right: it IS removable. **FIX (next): clear the structures' max draw distance** (set
+  `LDMaxDrawDistance = 0` on the Fortis outpost + site StaticMeshComponents — ideally batch via
+  ProgrammaticToolset across the level), and/or enable Nanite on the bespoke structure meshes so they render
+  at all distances. Then re-verify with a 140 m labeled capture: the structures should render. The surface
+  color/variation and fog work from prior entries stand; this is the remaining piece for "see the buildings
+  when you fly in."
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
