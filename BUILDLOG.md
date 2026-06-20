@@ -502,6 +502,31 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   color/variation and fog work from prior entries stand; this is the remaining piece for "see the buildings
   when you fly in."
 
+- **2026-06-20 — Clean-slate celestial wipe completed (Builder: Codex).** Preserved Fortis, the development
+  apron, the walkable gunship/player Blueprints, all gunship meshes/materials, and every `_authoring/make_*.py`.
+  Removed the four live experiment actors (`SYL_ReferenceWorld_01`, `SYL_NorthPolarCap_01`,
+  `SYL_SurfaceTile_Home_01`, `SYL_SurfaceSite_A01`) and deleted the old `BP_SYL_CelestialWorld`,
+  `BP_SYL_SurfaceSite`, all eight Celestial meshes, and all five Celestial materials. Asset-registry and
+  scene re-enumeration found **zero** remaining celestial `SYL` actors/assets. The former home-open and
+  remote-site downward traces both return null: the brown planet sheet—including the layer that appeared
+  near the remote tower top—is physically gone, not hidden.
+
+  Hardened 62 standalone Fortis/Claude StaticMeshComponents for aerial visibility:
+  `LDMaxDrawDistance=0`, `MinDrawDistance=0`, `bNeverDistanceCull=true`, and
+  `bAllowCullDistanceVolume=false`. A fresh 140 m labeled capture sees 80 scene actors and renders the
+  Fortis/apron geometry with no planet surface covering it. Captures at the former 45 m tower band show
+  empty space (only the atmospheric horizon remains); looking straight up from former open ground shows
+  only sky. Evidence: `_codex_clean_slate_140m_labels.png`,
+  `_codex_clean_slate_old_tower_height.png`, `_codex_clean_slate_look_up.png` (gitignored scratch).
+
+  Deleting the old body class invalidated its typed nodes in `BP_SYL_Ship`; removed only the obsolete
+  `GravityBody` variable, radius/surface-gravity getters, validity macros, and radial-force call at node
+  level. BeginPlay now connects directly to `SetEnableGravity(true)` while the new reusable body interface
+  is absent. Boarding, ramp/door, cameras, interaction prompts, and flight controls remain intact. The ship
+  and player compile with warnings-as-errors. Restored the OFPA ship instance to its documented apron pose
+  `(4500,0,130)`; after a clean level reload and six-second PIE it settled at
+  **(4500.000000, ~0, 138.361473), rotation 0/0/0**.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -509,18 +534,16 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **★ TOP PRIORITY (CODEX) — CLEAN-SLATE PLANET REBUILD (Jaron's decision, 2026-06-20).** The iterative
-   planet patches created a confusing draw-distance "layer" (PROVEN cause in the 2026-06-20 build entry).
-   Jaron wants a fresh start, not more patching. Full step-by-step plan is in **SESSION_HANDOFF.md §11 LIVE
-   TOP PRIORITY**: (a) PRESERVE ship + Fortis (and `_authoring/`), (b) WIPE the planet experiment to a blank
-   slate + clear any leftover max-draw-distance on the keepers, (c) build a real "Earth" planet in space + a
-   "Moon" a real distance away (planet-first principle), (d) seat Fortis/ship/buildings ON the Earth surface
-   (one surface, radial up). ACCEPTANCE is measured (140 m labeled capture renders the buildings; only sky
-   when looking up from open ground; round body + Moon visible from far). See MEMORY solar-system vision.
-2. **Real space arc IN PROGRESS (Codex):** build radial character orientation, verify the full atmosphere
-   transition, then extend into LWC travel/orbit. The geoid is silhouette-only and playable terrain must
-   use exact spherical LOD regions. The first physical/visual cap covers 156 km around home; extend this
-   data-driven cap/tile model around future destinations rather than restoring coarse geoid collision.
+1. **★ TOP PRIORITY (CODEX) — REAL EARTH + MOON FOUNDATION.** The old celestial experiment is fully gone;
+   do not restore its geoid/cap/tile stack. In this same UE 5.8 project, build a reusable data-driven body
+   model using real units and Large World Coordinates/reference frames. Instantiate a true-scale Earth
+   first, then a true-scale Moon at real separation. The bodies must be physical simulation sources, not
+   distant-sphere sky props. Keep body identity/parameters swappable for the future solar system.
+2. **THEN seat Fortis and the gunship ON Earth.** Build exactly one visible-and-physical local Earth surface,
+   place the outpost/apron/ship at a measured spherical coordinate with radial up, reconnect the ship to the
+   new generic gravity interface, and add radial character orientation. Acceptance: one down-trace surface,
+   only sky looking up, Fortis visibly rendered from 140 m, and a far view showing round Earth + the Moon.
+   After that, verify atmosphere transition and extend into LWC travel/orbit.
 3. Mouse-look on foot is DONE (polling-based), pitch set NON-inverted (mouse up = look up, FPS-standard;
    `AddControllerPitchInput(-DeltaY)`) per Jaron's test. Remaining input polish: tune mouse sensitivity
    with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,

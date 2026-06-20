@@ -126,77 +126,32 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
 - **Loop discipline:** ONE coherent chunk per pass; save + append BUILDLOG + checkpoint screenshot + git push each pass;
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
-## 11. Current cross-agent handoff (2026-06-20, decision by Jaron — CLEAN PLANET REBUILD, for Codex)
-> **★ LIVE TOP PRIORITY (CODEX): CLEAN-SLATE PLANET REBUILD per the build-order principle.** The iterative
-> planet attempts produced a confusing "brown layer" that hides the buildings from altitude. Claude PROVED
-> the buildings are loaded + in-frustum but draw-distance-culled at ~140 m (labeled CaptureViewport: 30
-> outpost actors in view, none drawn; not fog/shell/cull-volume/config — see BUILDLOG 2026-06-20 entry).
-> Jaron believes the underlying mess traces to an earlier Codex planet change and wants a fresh start
-> instead of more patching. **PLAN (Jaron's words):**
-> 1. **PRESERVE (store, do not lose):** the gunship/ship (`BP_SYL_Ship`, `BP_SYL_Player`, gunship meshes
->    `/Game/Curtis/Meshes/Gunship`, materials) and the **Fortis** outpost (all `SM_Fortis_*` meshes + the
->    apron). Keep all `_authoring/make_*.py`. These are the keepers.
-> 2. **WIPE the planet experiment from the level:** remove `BP_SYL_CelestialWorld` (geoid),
->    `SYL_NorthPolarCap_01` + `SM_SYL_NorthPolarCap_01`, `SM_SYL_UnitGeoid`, all `SM_SYL_SurfaceTile_*`,
->    `BP_SYL_SurfaceSite` + `SYL_SurfaceSite_A01` + remote-site meshes — i.e. blank slate (keep ship+Fortis).
->    Also CLEAR any leftover **max-draw-distance / LDMaxDrawDistance** on the kept structures so they render
->    from far (that is the proven "layer" cause — verify with a 140 m labeled capture afterward).
-> 3. **REBUILD planet-first (the principle):** make a real planet ("Earth") **in space**, and a SECOND planet
->    ("Moon") a real distance away — two data-driven bodies you fly between (see MEMORY: solar-system vision).
-> 4. **THEN place things ON the planet:** seat Fortis, the ship, and buildings on the Earth surface at the
->    correct spherical position with radial up. One visible+physical surface; no stacked shells.
-> ACCEPTANCE (measured): from 140 m up a labeled capture must render the buildings; looking up from open
-> ground shows only sky; the planet reads as one surface and a far view shows a round body + the Moon.
-> Claude was near its limit (resets ~1:30); Codex owns this rebuild.
+## 11. Current cross-agent handoff (2026-06-20 — CLEAN SLATE COMPLETE, Builder: Codex)
+> **★ LIVE TOP PRIORITY: BUILD REAL EARTH + MOON FIRST.** The old planet experiment is gone. Stay in this
+> UE 5.8 project; use Large World Coordinates plus reusable astronomical/local reference frames rather
+> than changing project templates. Build a data-driven, true-scale Earth, then a true-scale Moon at real
+> separation. Only after the bodies exist should Fortis, the apron, and the ship be seated on Earth's
+> measured spherical surface with radial up.
 
-- New source: `_authoring/make_planet_nearfield_cap.py`. Active near-field planet asset:
-  `/Game/Curtis/Meshes/Celestial/SurfaceLOD/SM_SYL_NorthPolarCap_01` (65,537 verts / 130,816 tris), placed
-  at (0,0,0) as non-spatially-loaded `SYL_NorthPolarCap_01`. It is the exact 6,360 km sphere from the pole
-  to the coarse geoid's first matching 256-vertex ring, 156.082 km away. All cap slots and the geoid use
-  `M_SYL_World_Surface`, so there is no material ring that reads like another platform.
-- The cap is real static collision (`CTF_UseComplexAsSimple`, double-sided, BlockAll), not visual-only.
-  PIE outside both old tiles at (2000 m,2200 m) rested the player at z=20.3694 cm over analytic surface
-  z=−69.4969 cm. The ship simultaneously kept its exact home settle. This directly replaces the brown
-  pass-through layer Jaron photographed.
-- The 2×4 km Home_02/Remote_02 components still exist as hidden exact collision backups, but never render;
-  they must not appear as rectangular terrain shelves again. Close/high/orbit checkpoints:
-  `_codex_planet_cap_remote_close.png`, `_codex_planet_cap_high_continuous.png`,
-  `_codex_planet_true_orbit.png` (gitignored).
-
-- New source: `_authoring/make_surface_corridor.py`. Active assets:
-  `/Game/Curtis/Meshes/Celestial/SurfaceTiles/SM_SYL_SurfaceTile_Home_02` and
-  `SM_SYL_SurfaceTile_Remote_02`; each is 2×4 km and uses the exact 6,360 km spherical equation. They are
-  now **render-hidden collision backups**. Home is a World Partition actor at (0,0,0);
-  `BP_SYL_SurfaceSite.Terrain` uses the remote tile at the existing 2 km arc transform. Their x=1 km seam
-  matches the analytic sphere within 0.025 cm after reload.
-- Terrain materials are `/Game/Curtis/Materials/Celestial/M_SYL_Terrain_{Basalt,IronRich,PaleSilicate}`.
-  They are deterministic metre-space lithology sections authored in Blender, not screen UI or fake water.
-  Close checkpoint: `_codex_unified_surface_remote_close_final.png` (gitignored).
-- `SM_SYL_UnitGeoid` no longer has Claude's temporary convex hull. It remains the always-loaded distant
-  round/orbital silhouette; streamed local tiles own playable collision. Six-second PIE regression:
-  ship (4500.000007,0,138.361473), rotation 0/0/0; player rests at home; home/seam/remote traces hit and
-  outside-corridor trace is null.
-
-- Jaron confirmed controls are good until there are real destinations. Codex started the planet lane:
-  `BP_SYL_CelestialWorld` now places a true-scale 6,360 km-radius reference world at
-  (0,0,-636,000,000 cm), aligned exactly with the level's existing 6,360 km / 60 km SkyAtmosphere.
-  Editable parameters: body name, radius, surface gravity, atmosphere height, sidereal rotation, axial
-  tilt. From-scratch geoid source: `_authoring/make_celestial_body.py`; UE mesh/material under
-  `/Game/Curtis/Meshes/Celestial` and `/Game/Curtis/Materials/Celestial`.
-- `BP_SYL_Ship.GravityBody` points to the placed world. Its Hull now uses inverse-square radial
-  acceleration read from that body; global-down gravity is disabled only when the body ref is valid.
-  Six-second home settle remains ~(4500,0,138.36147), rotation 0/0/0. A 100 km off-axis PIE probe moved
-  with cosine 1.0 toward the world center. Both Blueprints compile warnings-as-errors.
-- The geoid is the continuous round body/orbital silhouette and deliberately has no monolithic collision.
-  `BP_SYL_SurfaceSite` now supplies streamed local terrain/collision. `SYL_SurfaceSite_A01` is the first
-  remote destination: 2 km arc-distance straight +X from home at (199,999.9967,0,-31.4465), pitched
-  −0.01801754° to radial up. It has a 2×2 km exact spherical cap, 80×80 m deck, shelter, 45 m red beacon,
-  and physical red pad lighting. Source: `_authoring/make_remote_surface_site.py`; assets under
-  `/Game/Curtis/Meshes/Celestial/SurfaceSites`.
-- Automated remote touchdown passed: deck/terrain radial traces hit correctly; the ship settled at
-  287.0 cm radial altitude with 0.009 cm tangential drift and matched site pitch. Home settle remains
-  unchanged. **Next action is Jaron's round-trip:** launch from apron, hold W/+X ~1.95 km, acquire beacon,
-  land, and return. Use that evidence before tuning cruise or landing. Then build radial character up.
+- **Preserved:** Fortis outpost, development apron, `BP_SYL_Ship`, `BP_SYL_Player`, all gunship assets and
+  materials, and all `_authoring/make_*.py` sources.
+- **Deleted:** all four old celestial actors; `BP_SYL_CelestialWorld`, `BP_SYL_SurfaceSite`; every mesh under
+  `/Game/Curtis/Meshes/Celestial`; every material under `/Game/Curtis/Materials/Celestial`. Scene/asset
+  queries now return zero old celestial actors/assets.
+- **Brown layer proof:** downward traces at former home-open (1 km) and remote (2 km) locations are null.
+  The former remote-tower-height capture has no ground sheet; a straight-up capture is sky only. The old
+  sheet is deleted, not hidden. Scratch evidence: `_codex_clean_slate_old_tower_height.png`,
+  `_codex_clean_slate_look_up.png`.
+- **Distance visibility:** 62 standalone Fortis/Claude mesh components now have zero min/max distance,
+  `bNeverDistanceCull=true`, `bAllowCullDistanceVolume=false`. A 140 m labeled capture sees 80 actors and
+  renders the remaining Fortis/apron scene without a planet surface covering it:
+  `_codex_clean_slate_140m_labels.png` (gitignored).
+- **Ship transition:** removed only the deleted body's `GravityBody` variable/property nodes and radial
+  force branch. BeginPlay explicitly enables normal gravity until the new generic body interface exists;
+  all seat/door/ramp/camera/control logic remains. Ship/player compile warnings-as-errors. The saved ship
+  is at `(4500,0,130)` and six-second PIE settles at `(4500.000000,~0,138.361473)`, rotation 0/0/0.
+- **Next measured acceptance:** one visible-and-physical Earth surface at Fortis; base/open-ground traces
+  agree; looking up shows only sky; Fortis renders at 140 m; orbital view shows round Earth and Moon.
 
 - **Pilot camera system added to `BP_SYL_Ship`.** Two CameraComponents: `CockpitCam` (child of
   `SeatAnchor`, rel (10,0,64), FOV 95, first-person, AutoActivate) and the reused `ChaseCam` (child of

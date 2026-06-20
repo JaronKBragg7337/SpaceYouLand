@@ -105,3 +105,13 @@ planet (it floats ~0.5 m above), and (b) the coarse global geoid is a SEPARATE a
 in the editor world while the cap is always-loaded → two surfaces, "a planet inside the planet." Codex's
 captures looked fine only because they framed the new cap in isolation. **The fix Claude now owns (Codex out
 of usage): apply the BUILD-ORDER PRINCIPLE above — one surface, bases seated on it, measured acceptance.**
+
+**LATEST STATE (2026-06-20, Builder: Codex — supersedes the old planet notes above).** Jaron chose a full
+clean-slate celestial rebuild. The prior geoid, cap, local tiles, remote site, celestial Blueprints, meshes,
+and materials have all been deleted; Fortis, the apron, the walkable gunship/player, and all authoring
+sources are preserved. There are zero old celestial actors/assets, and downward traces at the former 1 km
+and 2 km surfaces are null, so the brown/tower-height sheet is physically gone. The ship temporarily uses
+normal gravity and compiles cleanly after removal of the deleted body's typed radial-gravity nodes; its
+six-second apron settle remains `(4500,~0,138.361473)`, rotation `0/0/0`. The live next task is to build a
+reusable true-scale Earth + Moon foundation in this same UE 5.8 project using real units, LWC, and explicit
+astronomical/local reference frames, then seat Fortis on exactly one measured Earth surface with radial up.
