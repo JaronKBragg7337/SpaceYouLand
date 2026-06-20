@@ -211,6 +211,29 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   to delete later.) NEXT (graph chunk, fresh session): `BP_SYL_CelestialBody` generic inverse-square gravity
   + reconnect ship + radial character orientation; then biome color + atmosphere bound to Earth data.
 
+- **2026-06-20 — ⚠️ STILL OPEN after testing: ground bounce + ship walk-through (logged for pickup, Builder:
+  Claude).** Jaron tested the fine-flat-grid ground (274ce40): **BOTH still broken.** So the bounce is NOT
+  collision geometry — ruled out: degenerate convex, huge triangles, AND now small flat triangles. KEY
+  CONTRAST that narrows it: the **Fortis platform/apron is STABLE** (small ~36 m meshes near origin) but the
+  **±6 km local-ground mesh BOUNCES** even with small triangles. So the remaining suspects are (a) the
+  COLLISION MESH SIZE (a ±6 km static collision mesh stresses Chaos even near origin), and/or (b) TRUE-SCALE
+  WORLD COORDINATES degrading global physics precision (Earth actor at z=−635,675,200 cm; Moon at
+  x=38,440,000,000 cm). **NEXT-SESSION PLAN (do in this order):**
+  1. **Decisive test for world-scale vs mesh:** in PIE, temporarily move/hide the Moon (3.84e10) and Earth
+     shells, OR shrink the local ground to a SMALL pad (~±200 m, platform-sized), and see if the bounce
+     stops. If small pad is stable → it's MESH SIZE (tile the ground into small collidable pads, like the
+     apron). If bounce persists with everything tiny → it's WORLD-SCALE precision → needs **origin rebasing /
+     World Origin Shifting** (keep the player near (0,0,0); represent Earth/Moon distance another way), which
+     is the real true-scale-planet solution.
+  2. **Ship walk-through:** ship BeginPlay collision profiles are intact (walls BlockAllDynamic+QueryOnly).
+     Ask Jaron: does it happen STANDING STILL, or only after a bounce? If only after bounce → fixing the
+     bounce fixes it. If standing still → real coverage gap (cockpit-front); add collision boxes there. The
+     walls are also thin QueryOnly → consider thicker/CCD collision so a fast body can't tunnel.
+  CURRENT GOOD STATE (don't lose): clean Earth+Moon at true scale; Fortis on a visible flat local ground
+  (`SYL_EarthLocalCollision_North` = `SM_SYL_EarthLocalGround_Fine`, z=10, visible Earth mat, complex-as-simple);
+  curved cap `SYL_EarthLocalSurface_North` fills the distance; ship/Fortis intact, settle at (4500,0,138.36).
+  Orphan ground meshes `_Flat`/`_Box`, cap `_Fine` are unused — safe to delete.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -218,12 +241,18 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **★ TOP PRIORITY (CODEX) — ONE PHYSICAL EARTH SURFACE + GENERIC GRAVITY.** The reusable true-scale Earth
-   and Moon reference bodies now exist at real radii/separation with sourced data, but their shells are
-   intentionally non-colliding and do not yet exert live force. Build exactly one visible-and-physical local
-   Earth surface through the 1.40625° north opening; seat Fortis/apron/ship on it at a measured WGS84
-   coordinate with radial up; make `BP_SYL_CelestialBody` the generic inverse-square gravity source; reconnect
-   the ship and add radial character orientation. Never restore the old geoid/cap/tile stack.
+1. **★ TOP PRIORITY — FIX THE PHYSICS: ground bounce + ship walk-through (both still broken after testing).**
+   Full diagnosis + ordered plan are in the dated **"⚠️ STILL OPEN after testing"** build entry above. Short
+   version: the Fortis platform is stable but the ±6 km local-ground mesh bounces even with small flat
+   triangles, so it's NOT collision geometry — it's collision-MESH-SIZE and/or TRUE-SCALE WORLD-COORDINATE
+   precision. FIRST do the decisive test (shrink the ground to a ~±200 m platform-sized pad and/or hide the
+   Earth/Moon shells; if it stabilizes it's mesh size → tile small pads; if not it's world scale → needs
+   **origin rebasing / World Origin Shifting**). Then resolve the ship walk-through (confirm standing-still
+   vs bounce-only; add cockpit-front collision boxes + thicker/CCD walls if needed). The local Earth surface
+   (one visible flat ground + curved distant cap) and Fortis-on-Earth ARE built; this physics-stability bug
+   is the blocker before gravity/orientation.
+2. After the physics is stable: make `BP_SYL_CelestialBody` the generic inverse-square gravity source,
+   reconnect the ship, add radial character orientation. Never restore the old geoid/cap/tile stack.
 2. **MEASURED ACCEPTANCE.** One down-trace surface (base and open ground agree), only sky looking up, no
    brown layer at the old tower band, Fortis rendered from 140 m, ship settles level under Earth gravity,
    and a far view shows round Earth + Moon. Then bind the atmosphere model to the same Earth data and extend
