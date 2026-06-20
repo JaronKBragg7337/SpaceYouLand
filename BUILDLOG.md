@@ -155,6 +155,18 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   (~12 cm at 300 m, ~36 cm at 1 km), so the character will look slightly raised far from base. Densifying the
   visual cap's pole rings to match is the immediate next refinement. Jaron to confirm bounce is gone on foot.
 
+- **2026-06-20 — REVERTED the densified cap (it spiked); back to the smooth coarse cap (Builder: Claude).**
+  The pole-clustered fine cap (RING_CONCENTRATION=2.2) put its innermost ring ~38 m from the pole, so the
+  256-triangle pole FAN became long thin slivers right at the player → rendered as a ring of dark spikes
+  ("can't do anything" — Jaron stuck in broken geometry). LESSON: a UV cap viewed from its own pole needs a
+  COARSE pole fan (huge triangles read smooth); fine-at-pole = slivers. Swapped `SYL_EarthLocalSurface_North`
+  back to the coarse `SM_SYL_EarthLocalCap_North` (28 even rings). Capture confirms a smooth surface, ship on
+  the apron, base + ground to the horizon, no spikes. (`SM_SYL_EarthLocalCap_North_Fine` is now an unused
+  orphan — delete later.) The minor visual-vs-collision float remains (≈2 cm at base, ~12 cm at 300 m, ~36 cm
+  at 1 km — collision sits at the true surface, coarse visual dips slightly; negligible near base). PROPER
+  float fix later WITHOUT the spike risk: a grid-centre cap (no pole singularity) or match collision to the
+  coarse cap — NOT more pole-fan refinement. Working surface restored; superseded the densify entry below.
+
 - **2026-06-20 — Densified the visual Earth cap to match the collision (Builder: Claude).** Re-authored the
   cap with 44 rings clustered toward the pole (`RING_CONCENTRATION=2.2`) so local Fortis terrain is finely
   tessellated and follows the true ellipsoid — matching the normal-scale collision patch, eliminating the
