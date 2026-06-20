@@ -471,6 +471,21 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   (MaxOpacity 1.0→0.5, density→0.015, falloff→1.0). **Jaron to fly out and confirm: planet reads as terrain,
   not a brown layer, and the beacon/site are findable.** Tunable: terrain colors, noise scale, fog.
 
+- **2026-06-19 — Real cause of "can't see the base from high": World Partition LOD culling (Builder: Claude).**
+  Jaron: before the planet he could fly high and see the Fortis base; now a "brown layer" hides it. Measured:
+  from a god-cam **45 m** straight down the full outpost (walls, towers, lights, courtyard) renders crystal
+  clear; from **140 m** straight down it's GONE — only the orange surface shows — and cutting fog hard
+  (density 0.005, MaxOpacity 0.3) did NOT bring it back. So it's not fog and not a geometry shell: the
+  detailed structure meshes **cull/LOD out past ~100 m view distance** while the always-loaded planet
+  surface (cap/geoid) keeps rendering. That is the "brown layer with nothing on it" from altitude — the
+  ground stays, the buildings vanish. Before the planet there was no ground, so the culled-out base just
+  read as empty sky; now the ground is there, so it reads as a covering layer. **NEXT TASK (clean, scoped):
+  keep key structures visible at distance** — generate World Partition HLOD proxies and/or raise the
+  outpost/site/beacon mesh draw distances (and consider Nanite on the bespoke meshes) so you can see where
+  to fly from the air, not just from <100 m. Beacons (tall, emissive) already show from high and remain the
+  primary far-navigation marker. Fog left light for atmosphere + visibility (density 0.006/falloff 1.4/
+  MaxOpacity 0.35). Surface color/variation from the prior entry stands.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
