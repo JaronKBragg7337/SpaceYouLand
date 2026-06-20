@@ -155,6 +155,22 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   (~12 cm at 300 m, ~36 cm at 1 km), so the character will look slightly raised far from base. Densifying the
   visual cap's pole rings to match is the immediate next refinement. Jaron to confirm bounce is gone on foot.
 
+- **2026-06-20 — Fix the bounce/fall-through with a FLAT local ground pad (Builder: Claude).** Jaron: still
+  bouncing violently the instant his feet touched the ground, and the bounce velocity punched him through
+  the ship floor (so he could walk through it). Root: curved **complex-as-simple** collision at true planet
+  scale makes unstable Chaos contacts → violent depenetration. The float-vs-bounce trade (curved=bounce,
+  flat-collision-under-curved-visual=float) is resolved by making the LOCAL ground genuinely FLAT and the
+  VISIBLE surface: a real planet is imperceptibly flat for km (Earth curves ~8 m over 10 km). Authored
+  `_authoring/make_earth_local_ground.py` → `SM_SYL_EarthLocalGround_Flat` (±10 km flat pad), gave it SIMPLE
+  **convex/box** collision (rock-solid, no bounce), swapped it onto `SYL_EarthLocalCollision_North`
+  (renamed role: local ground), VISIBLE with the Earth material, `BlockAll`, lifted to z=10 cm so it cleanly
+  reads above the curved cap (no z-fight). So the player walks on AND sees the SAME flat box surface → no
+  bounce, no float. The big curved cap (`SYL_EarthLocalSurface_North`, NoCollision) still fills 10→156 km and
+  gives the round-from-orbit body. Trace at 3 km hits the pad at z=10 (flat). Capture: Fortis flush on smooth
+  flat ground to the horizon. Jaron to confirm bounce + ship-fall-through are gone (couldn't be verified
+  headlessly). Curved walkable terrain at scale (vs flat-local) is a deeper future task (Landscape / origin
+  rebasing). Supersedes the visible-patch entry below.
+
 - **2026-06-20 — Fix "Fortis floating / invisible platform": made the collision patch the VISIBLE surface
   (Builder: Claude).** Jaron (sharp diagnosis): walking on an invisible platform while Fortis + ground
   shadows sat on a lower brown layer — the float between the (invisible) collision patch at the true surface
