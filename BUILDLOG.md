@@ -455,6 +455,22 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   landmarks; that dissolves the "layer" illusion. Apply via the shared `M_SYL_World_Surface` (cap + geoid use
   it) so one shader changes the whole planet — forward-compatible per the multi-planet vision.
 
+- **2026-06-19 — Planet surface material: dark void → visible varied terrain (Builder: Claude).** Confirmed
+  the "brown layer hiding the sites" is the SURFACE itself: `M_SYL_World_Surface` (shared by cap + geoid) was
+  a flat near-black color **(0.045, 0.06, 0.07)** with no variation, so from the air everything read as a
+  dark murk and dark buildings vanished. Even with fog turned nearly off, the site stayed an unreadable void
+  — proving the material, not fog, was the cause. Rebuilt the material (carefully, recompiled once — Codex had
+  crashed the Material Editor here): base color → warm rock **(0.37,0.26,0.17)**; added a second tone
+  **(0.20,0.14,0.10)** and a `MaterialExpressionNoise` (Scale 0.00003 ≈ few-hundred-metre features, Levels 3,
+  output 0–1) feeding a `LinearInterpolate` into BaseColor — so the planet now has lighter/darker rocky
+  variation (navigation landmarks). Verified in PIE: surface is a visible warm rock field with large-scale
+  variation instead of a black void. One shader repaints the whole planet (cap + geoid) and every future
+  planet — forward-compatible per the solar-system vision. NOTE on captures: god-cam captures 2 km from the
+  PIE player do NOT stream the remote site geometry (WP streams around the player), so far captures show only
+  the always-loaded surface; the site renders normally when the player flies there. Fog also softened earlier
+  (MaxOpacity 1.0→0.5, density→0.015, falloff→1.0). **Jaron to fly out and confirm: planet reads as terrain,
+  not a brown layer, and the beacon/site are findable.** Tunable: terrain colors, noise scale, fog.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
