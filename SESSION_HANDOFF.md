@@ -13,6 +13,15 @@
 4. **CLAUDE.md** — note its "Curtis lab / obstacle course" framing is a wrapper; the real project is
    **SYL (Space You Land)**, a 100%-realistic first-person space game (see memory).
 
+> **⚠️ POSSIBLE MAJOR PIVOT (2026-06-20, Jaron weighing it):** Jaron is strongly considering scrapping THIS
+> project and starting a CLEAN new Unreal project reframed as an **Earth-twin discovery game** — a real-world
+> digital twin (countries/companies/governments/factories/supply chains), where **space is HIDDEN/dormant**
+> and players DISCOVER that rockets/space are even possible. Space must EXIST in the engine/data from day one
+> (large-world coords, orbital physics, data-driven material/part catalog) but be unexposed; playable content
+> is strictly Earth-industrial, no hints. Carry over INTENTION ONLY — no assets (this outpost/ship/planet
+> stay archived). If that path is taken, the physics-bug "Next up #1" below is MOOT and Claude sets up the
+> new project skeleton instead. If NOT taken, continue the Next-up physics fix. Confirm with Jaron first.
+
 ## 1. What SYL is (one paragraph)
 Persistent, first-person space game. **Design law: relate to reality 100%, no fakes** — real physics,
 real gravity, walkable ships/stations, cargo/crew physical, "menus observe reality," "the world is
