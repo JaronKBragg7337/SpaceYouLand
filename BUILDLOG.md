@@ -423,6 +423,21 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   note: a 6,360 km-radius body correctly looks nearly flat from only a few kilometres up; roundness becomes
   obvious at orbital distance, but separate shells/platform sheets must never appear.
 
+- **2026-06-19 — Independent verification of the planet state at 5cb310f (Builder: Claude).** Claude now
+  owns the planet fix (Codex out of usage). Measured the LIVE saved geometry directly (PIE):
+  `BP_SYL_CelestialWorld` is at location (0,0,−636,000,000), scale 6,360,000 → radius 636,000,000 cm, **apex
+  z=0**, and `bIsSpatiallyLoaded=false` (always loaded). The cap (`SYL_NorthPolarCap_01`) top is also **z=0**.
+  So geoid and cap are **concentric, same radius, coincident at the pole — effectively one sphere**, both
+  always-loaded (no streaming flicker). Bases sit on it: home foundation at the z≈0 surface (apron is a
+  ~54 cm raised deck by design); remote deck at z≈−31 cm = the cap's true height there; open ground 1 km out
+  traces to −7.86 cm (true sphere). **Acceptance tests PASS on the saved state:** (1) capture from 2.5 km
+  out / 800 m up = one continuous surface to the horizon, no stacked layers; (2) capture looking straight up
+  from open ground = only sky, no ceiling/second shell. So the "two stacked layers / fly through a layer"
+  Jaron reported is NOT present in the final saved 5cb310f geometry — most likely he saw a MID-WORK state
+  during Codex's many incremental commits. CAVEAT: static god-cam captures can't fully replicate live flight;
+  if Jaron still sees layering on a FRESH test, capture his exact camera pose/altitude and chase it there.
+  STILL OPEN (real): surface is uniform brown — the color/landmark/navigation request is unaddressed.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
