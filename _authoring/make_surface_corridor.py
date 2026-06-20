@@ -29,9 +29,13 @@ class Tile:
 
 
 TILES = (
-    Tile("SM_SYL_SurfaceTile_Home_01", 0.0),
-    Tile("SM_SYL_SurfaceTile_Remote_01", 2_000.0),
+    Tile("SM_SYL_SurfaceTile_Home_02", 0.0),
+    Tile("SM_SYL_SurfaceTile_Remote_02", 2_000.0),
 )
+
+BASALT = (0.045, 0.075, 0.085)
+IRON_RICH = (0.34, 0.075, 0.025)
+PALE_SILICATE = (0.34, 0.29, 0.17)
 
 
 def clear_scene() -> None:
@@ -65,12 +69,7 @@ def mix(a, b, amount: float):
     return tuple(x + (y - x) * amount for x, y in zip(a, b))
 
 
-def lithology_colour(x: float, y: float):
-    """Broad mineral regions used as physical surface navigation landmarks."""
-    basalt = (0.045, 0.075, 0.085)
-    iron_rich = (0.34, 0.075, 0.025)
-    pale_silicate = (0.34, 0.29, 0.17)
-
+def lithology_weights(x: float, y: float):
     iron_field = (
         0.55 * sin((x + 0.42 * y) / 360.0)
         + 0.30 * sin((0.31 * x - y) / 155.0)
@@ -83,9 +82,25 @@ def lithology_colour(x: float, y: float):
     )
     iron_weight = smoothstep(-0.35, 0.35, iron_field)
     basin_weight = smoothstep(0.10, 0.72, basin_field)
-    colour = mix(basalt, iron_rich, iron_weight * 0.78)
-    colour = mix(colour, pale_silicate, basin_weight * 0.72)
+    return iron_weight, basin_weight
+
+
+def lithology_colour(x: float, y: float):
+    """Broad mineral regions used as physical surface navigation landmarks."""
+    iron_weight, basin_weight = lithology_weights(x, y)
+    colour = mix(BASALT, IRON_RICH, iron_weight * 0.78)
+    colour = mix(colour, PALE_SILICATE, basin_weight * 0.72)
     return colour
+
+
+def lithology_region(x: float, y: float) -> int:
+    """Return the dominant authored material section for reliable FBX import."""
+    iron_weight, basin_weight = lithology_weights(x, y)
+    if basin_weight > 0.58:
+        return 2
+    if iron_weight > 0.52:
+        return 1
+    return 0
 
 
 def grid_vertices(tile: Tile, segments_x: int, segments_y: int):
@@ -128,13 +143,26 @@ def make_render_mesh(tile: Tile, segments_x: int = 64, segments_y: int = 128):
     )
     for polygon in mesh.polygons:
         polygon.use_smooth = True
+        center = sum(
+            (mesh.vertices[index].co for index in polygon.vertices),
+            start=mesh.vertices[polygon.vertices[0]].co.copy() * 0.0,
+        ) / len(polygon.vertices)
+        home_x, home_y = home_tangent_coordinates(
+            tile,
+            center.x,
+            center.y,
+            center.z,
+        )
+        polygon.material_index = lithology_region(home_x, home_y)
         for loop_index in polygon.loop_indices:
             vertex_index = mesh.loops[loop_index].vertex_index
             colour_layer.data[loop_index].color = (*colours[vertex_index], 1.0)
 
     obj = bpy.data.objects.new(tile.asset_name, mesh)
     bpy.context.collection.objects.link(obj)
-    obj.data.materials.append(bpy.data.materials.new("LocalTerrain"))
+    obj.data.materials.append(bpy.data.materials.new("Basalt"))
+    obj.data.materials.append(bpy.data.materials.new("IronRich"))
+    obj.data.materials.append(bpy.data.materials.new("PaleSilicate"))
     return obj
 
 
