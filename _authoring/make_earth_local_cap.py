@@ -22,7 +22,8 @@ FBX_PATH = ROOT / "SM_SYL_EarthLocalCap_North.fbx"
 
 U_SEGMENTS = 256          # must match the Earth shell longitude count
 V_SEGMENTS = 128          # must match the Earth shell latitude count
-CAP_RINGS = 28            # latitude rings from the opening boundary up toward the pole
+CAP_RINGS = 44            # latitude rings from the opening boundary up toward the pole
+RING_CONCENTRATION = 2.2  # >1 clusters rings near the pole (fine local terrain, matches collision patch)
 
 # The Earth shell's last (open) ring; the cap's outer boundary must equal it exactly.
 BOUNDARY_RING = V_SEGMENTS - 1
@@ -40,9 +41,14 @@ def build_cap() -> bpy.types.Object:
     rings: list[list[int]] = []
 
     # Rings from the boundary latitude (r=0) toward the pole. r=0 reproduces the
-    # Earth shell's last ring exactly so the seam closes.
+    # Earth shell's last ring exactly so the seam closes. Rings are clustered near
+    # the pole (angle-from-pole ^ RING_CONCENTRATION) so the local Fortis terrain is
+    # finely tessellated and matches the normal-scale collision patch (no float),
+    # while the distant 156 km edge stays coarse (no one is out there on foot).
+    boundary_theta = POLE_LAT - BOUNDARY_LAT
     for r in range(CAP_RINGS):
-        latitude = BOUNDARY_LAT + (POLE_LAT - BOUNDARY_LAT) * (r / CAP_RINGS)
+        theta = boundary_theta * (1.0 - r / CAP_RINGS) ** RING_CONCENTRATION
+        latitude = POLE_LAT - theta
         radial = cos(latitude)
         z = sin(latitude)
         idxs: list[int] = []

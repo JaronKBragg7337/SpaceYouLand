@@ -155,6 +155,16 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   (~12 cm at 300 m, ~36 cm at 1 km), so the character will look slightly raised far from base. Densifying the
   visual cap's pole rings to match is the immediate next refinement. Jaron to confirm bounce is gone on foot.
 
+- **2026-06-20 — Densified the visual Earth cap to match the collision (Builder: Claude).** Re-authored the
+  cap with 44 rings clustered toward the pole (`RING_CONCENTRATION=2.2`) so local Fortis terrain is finely
+  tessellated and follows the true ellipsoid — matching the normal-scale collision patch, eliminating the
+  visual-vs-collision float. Boundary ring still exactly the Earth shell's last ring (88.59375°, 256 segs) →
+  still seamless. Imported `SM_SYL_EarthLocalCap_North_Fine` and swapped it onto `SYL_EarthLocalSurface_North`
+  (NoCollision, visual-only). Capture confirms one smooth continuous Earth surface, Fortis seated on it, no
+  faceting, no floating layer. (Old coarse `SM_SYL_EarthLocalCap_North` is now an unused orphan asset — safe
+  to delete later.) NEXT (graph chunk, fresh session): `BP_SYL_CelestialBody` generic inverse-square gravity
+  + reconnect ship + radial character orientation; then biome color + atmosphere bound to Earth data.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
