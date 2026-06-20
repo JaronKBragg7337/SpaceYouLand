@@ -54,6 +54,10 @@ a physical pilot seat, pressure door, and ramp. Owner: Jaron.
 5. Place: `SceneTools.add_to_scene_from_asset`; material via component `OverrideMaterials`
    (`ObjectTools.set_properties` JSON `{"OverrideMaterials":["/Game/Curtis/Materials/M_x.M_x"]}`)
    or `StaticMeshTools.set_material`. Existing mats: `M_Fortis_Steel`, `M_Fortis_Red`, `M_Claude_Sign`.
+- **UE 5.8 material gotcha:** an explicit `MaterialTools.recompile` immediately after programmatic graph
+  edits crashed `MaterialEditor` with an access violation. Add/connect expressions, ensure an expression
+  edit dirties the package, then `AssetTools.save_assets` and let normal shader compilation run. Commit
+  before any explicit recompile attempt.
 
 ## 4. Viewport screenshots (IMPORTANT decode trick)
 `EditorAppToolset.CaptureViewport` returns a base64 PNG **too big to inline**. Current MCP responses
@@ -113,15 +117,24 @@ Project root: `C:\Users\lilli\Documents\Unreal Projects\CurtisAILab`. Engine: UE
   additive/reversible; never overlap Unreal calls. Honor pause immediately; a stale queued `/loop` tick during a pause = stand down.
 
 ## 11. Current cross-agent handoff (2026-06-19, Builder: Codex)
-> **★ LIVE TOP PRIORITY (for whoever picks up — intended: Codex): UNIFY THE PLATFORMS WITH THE PLANET
-> SURFACE.** Jaron's round-trip test showed the home outpost + remote site do NOT sit on the visible
-> planet — it reads as "random platforms with a separate planet layer above them," only beacons poking
-> through. Three inconsistent surface heights: the low-res 256-seg global geoid, the legacy flat home
-> outpost, and the remote curved patch. Make ONE true surface they all share; also add planet surface
-> color/material for navigation landmarks. Full root cause + fix steps are in **BUILDLOG.md → Next up #1**
-> and the dated "⚠️ ISSUE FOR CODEX" entry. (Claude added a convex-collision stopgap so you can stand on
-> the geoid meanwhile.) The older "Jaron's round-trip is the next action" notes below are now superseded
-> by this.
+> **★ LIVE TOP PRIORITY: JARON'S ROUND-TRIP ON THE UNIFIED SURFACE.** The detached-platform issue is
+> resolved. Home and remote now share exact neighboring spherical terrain tiles with physical mineral
+> color regions; the coarse global geoid is silhouette-only again. Fly home→remote→home and use measured
+> cruise time, beacon visibility, approach, touchdown, and terrain readability before tuning forces or
+> lights. Full evidence and paths are in **BUILDLOG.md → 2026-06-19 Unified true surface corridor**.
+
+- New source: `_authoring/make_surface_corridor.py`. Active assets:
+  `/Game/Curtis/Meshes/Celestial/SurfaceTiles/SM_SYL_SurfaceTile_Home_02` and
+  `SM_SYL_SurfaceTile_Remote_02`; each is 2×4 km and uses the exact 6,360 km spherical equation. Home is
+  a World Partition static-mesh actor at (0,0,0); `BP_SYL_SurfaceSite.Terrain` uses the remote tile at the
+  existing 2 km arc transform. Their x=1 km seam matches the analytic sphere within 0.025 cm after reload.
+- Terrain materials are `/Game/Curtis/Materials/Celestial/M_SYL_Terrain_{Basalt,IronRich,PaleSilicate}`.
+  They are deterministic metre-space lithology sections authored in Blender, not screen UI or fake water.
+  Close checkpoint: `_codex_unified_surface_remote_close_final.png` (gitignored).
+- `SM_SYL_UnitGeoid` no longer has Claude's temporary convex hull. It remains the always-loaded distant
+  round/orbital silhouette; streamed local tiles own playable collision. Six-second PIE regression:
+  ship (4500.000007,0,138.361473), rotation 0/0/0; player rests at home; home/seam/remote traces hit and
+  outside-corridor trace is null.
 
 - Jaron confirmed controls are good until there are real destinations. Codex started the planet lane:
   `BP_SYL_CelestialWorld` now places a true-scale 6,360 km-radius reference world at

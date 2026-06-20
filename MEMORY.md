@@ -63,8 +63,11 @@ loaded, but does not pretend to be local terrain. Streamed local surface geometr
 layer; radial character orientation is next.
 
 The first destination now exists. `SYL_SurfaceSite_A01` is 2 km along the planet surface in the +X
-direction from home, placed and pitched from exact 6,360 km spherical coordinates. It streams as a
-World Partition surface actor with a 2×2 km curved UCX-collidable terrain cap, 80×80 m physical deck,
-shelter, 45 m red beacon, and real pad lighting. The gunship passed an automated radial touchdown with
-0.009 cm tangential drift and still settles normally at home. Jaron's next useful test is the full
-home→site→home flight; its real travel time and approach visibility should drive the next tuning pass.
+direction from home, placed and pitched from exact 6,360 km spherical coordinates. Home and remote now
+sit on neighboring 2×4 km streamed terrain tiles generated from the same sphere; their shared x=1 km
+edge matches the analytic world within 0.025 cm. Deterministic basalt, iron-rich, and pale-silicate
+material regions provide physical navigation landmarks. The coarse geoid has no collision and is only
+the distant/orbital silhouette; true streamed tiles own playable terrain/collision. The remote 80×80 m
+deck, shelter, 45 m beacon, and real pad lights remain intact. Six-second PIE still settles the ship at
+home with exact zero rotation. Jaron's next useful test is the full home→site→home flight; its real travel
+time, terrain readability, beacon range, approach, and touchdown should drive the next tuning pass.

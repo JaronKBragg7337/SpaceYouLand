@@ -368,6 +368,33 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   Claude's convex-collision stopgap (prior entry) lets you stand on the geoid meanwhile. NEXT MEASUREMENT:
   open editor, read world Z of the geoid surface vs apron deck (z≈52) vs remote deck to get exact gaps.
 
+- **2026-06-19 — Unified true surface corridor + physical lithology (Builder: Codex).** Resolved the
+  detached-platform issue with live measurements first: the coarse global geoid was only −0.57 m near
+  the apron but **−28.59 m** beside the remote site, while the accurate remote terrain was −0.33 m.
+  Authored `_authoring/make_surface_corridor.py` and two neighboring 2×4 km streamed tiles on the same
+  6,360 km sphere: `SM_SYL_SurfaceTile_Home_02` at the home tangent origin and
+  `SM_SYL_SurfaceTile_Remote_02` at the existing site's exact 2 km arc transform. They meet at x=1 km;
+  post-reload traces on both sides of the seam matched the analytic sphere within **0.025 cm**. Home and
+  remote open-surface traces were within 0.025 cm and 0.018 cm respectively.
+
+  Added three from-scratch, physically rough lithology materials—`M_SYL_Terrain_Basalt`,
+  `M_SYL_Terrain_IronRich`, and `M_SYL_Terrain_PaleSilicate`—and encoded a deterministic metre-space
+  mineral field as FBX material sections, giving real navigation-scale color regions without pretending
+  painted ground is water. The home tile is a saved World Partition actor; `BP_SYL_SurfaceSite` now uses
+  the matching remote tile. Removed Claude's temporary convex collision from `SM_SYL_UnitGeoid`; the
+  coarse geoid is again only the always-loaded distant/orbital silhouette, while streamed true-surface
+  tiles own playable collision. Outside the corridor now correctly returns no terrain hit instead of a
+  false surface tens of metres away.
+
+  Verification: clean level reload reconstructed both tiles and the remote Blueprint mesh reference;
+  six-second PIE left the gunship at **(4500.000007, 0, 138.361473)** with exact 0/0/0 rotation and the
+  player resting at home z=140.15. Home, seam, and remote traces remained valid in PIE; outside-corridor
+  trace remained null. Close visual QA (`_codex_unified_surface_remote_close_final.png`, gitignored)
+  shows the lit 80 m deck physically seated on pale terrain with its supports/shelter intact. Material
+  automation gotcha: UE 5.8 crashed in `MaterialEditor` when `MaterialTools.recompile` was called after
+  graph edits; recovery was clean. Add/connect nodes, save the dirtied package, and let normal shader
+  compilation run—checkpoint before any explicit recompile.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
@@ -375,31 +402,20 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
 ## fake. Stage it as real systems built incrementally, never as placeholders that cheat reality.
 
 ## Next up (living TODO — keep current)
-1. **★ TOP PRIORITY (Codex) — UNIFY THE PLATFORMS WITH THE PLANET SURFACE.** Jaron's round-trip test
-   (2026-06-19) revealed the home outpost and the remote site do NOT sit on the visible planet — it
-   "looks like random platforms with a separate planet layer above them," only the beacons poking through.
-   Root cause + fix direction are written up in the dated **"⚠️ ISSUE FOR CODEX: platforms not unified
-   with the planet surface"** entry in Build history above. In short: the low-res 256-seg global geoid, the
-   legacy flat home outpost, and the remote curved patch are three different surface heights. Make ONE
-   true surface everything sits on (seat the home outpost on a curvature-correct patch like the remote
-   site; align geoid + patches + decks to the same per-location height; use the global geoid only as the
-   distant silhouette or raise its near-field fidelity). FIRST STEP: open the editor, measure world-Z of
-   the geoid surface vs the apron deck (z≈52) vs the remote deck to get exact gaps. **Also add the planet
-   SURFACE COLOR/MATERIAL** (land/water-style variation) so the surface reads and gives navigation
-   landmarks — Jaron asked for this and it rides along with the unification.
-2. After #1, redo **Jaron's round-trip** evidence (cruise time, beacon range, approach, touchdown feel)
-   and tune travel/landing from it. Preserve one physical body/ship and real acceleration; no teleport,
-   map-cut, or fake cruise. NOTE: a convex-collision stopgap is on the geoid so you can stand on it now,
-   but it's the low-res surface — replace as part of #1.
+1. **★ TOP PRIORITY — Jaron's round-trip on the unified surface:** launch from the home apron, hold
+   W/+X for ~1.95 km, acquire the remote beacon, land on the lit deck, then return. Record real cruise
+   time, beacon range, approach readability, touchdown feel, and whether the new mineral regions provide
+   enough motion/navigation reference. Tune real force/torque and physical lighting from that evidence;
+   no teleport, map cut, or fake cruise.
+2. **Real space arc IN PROGRESS (Codex):** build radial character orientation, verify the full atmosphere
+   transition, then extend into LWC travel/orbit. The geoid is silhouette-only and playable terrain must
+   come from exact streamed spherical tiles. Expand the tile system beyond this first 4 km corridor as
+   destinations require; never restore monolithic low-resolution geoid collision.
 3. Mouse-look on foot is DONE (polling-based), pitch set NON-inverted (mouse up = look up, FPS-standard;
    `AddControllerPitchInput(-DeltaY)`) per Jaron's test. Remaining input polish: tune mouse sensitivity
    with Jaron; optionally migrate to full Enhanced Input assets (IA_/IMC_) and rebind ship flight to it,
    preserving the same body/seat/ship state model. (Per Jaron 2026-06-19, planet + home arcs go to Codex.)
-4. **Real space arc IN PROGRESS (Codex):** true-scale geoid, data-driven body, inverse-square ship
-   gravity, curvature-conforming terrain/collision, and the first remote landing site are DONE. Next:
-   radial character orientation, atmosphere-transition verification, then LWC travel/orbit. Never use
-   a flat-zone or sky-sphere fake.
-5. Secondary world work: roads/ground detailing, walkable building interiors, construction animation,
+4. Secondary world work: roads/ground detailing, walkable building interiors, construction animation,
    station district, physical needs/health, hostile incursion loop.
 
 ## Signature
