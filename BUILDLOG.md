@@ -128,6 +128,21 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   establishes exact geometry + body data/reference frames; live inverse-square gravity and the single
   local physical Earth surface are deliberately the next coherent chunk, not claimed complete here.
 
+- **2026-06-20 — ONE physical Earth surface built; Fortis now stands on Earth (Builder: Claude).** Authored
+  `_authoring/make_earth_local_cap.py` from scratch: a cap that reproduces the EXACT missing piece of the
+  Earth shell — its outer boundary ring is the shell's last open ring (ring 127, latitude **88.59375°**, 256
+  segments at identical longitudes, same unit-sphere math), 28 rings closing to the pole. Imported
+  `/Game/Curtis/Meshes/Celestial/Bodies/SM_SYL_EarthLocalCap_North`, set BodySetup
+  `CTF_UseComplexAsSimple` + double-sided, placed `SYL_EarthLocalSurface_North` at the Earth's EXACT
+  transform (loc (0,0,−635675200), scale (6378137,6378137,6356752)) so the boundary verts coincide with the
+  shell → seamless, no second global shell. Always-loaded, `BlockAll` QueryAndPhysics, `bNeverDistanceCull`,
+  Earth mean-albedo material. Verified: down-trace at the pole hits the Fortis foundation (z=50) on the cap;
+  open ground 1 km out hits the cap at z≈−47 cm (gentle dome, Fortis on the high point); a capture shows
+  Fortis seated on one continuous Earth surface to the horizon, no floating brown layer. Fortis is now ON
+  the Earth at the north pole. NOTE: pole region is a smooth gentle dome (rings evenly spaced over 1.4° so
+  the apex cone spans ~5.6 km — imperceptible slope; could densify rings near the pole later). NEXT: wire
+  `BP_SYL_CelestialBody` as generic inverse-square gravity + reconnect ship; radial character orientation.
+
 ## ⭐ Design law (Jaron, 2026-06-18): RELATE TO REALITY 100%, ALWAYS — even if it means going
 ## above and beyond / taking longer. Do NOT default to fake/shortcut approaches that break realism.
 ## Applies to the space arc: aim for the REAL thing (round planets w/ radial gravity, true scale,
