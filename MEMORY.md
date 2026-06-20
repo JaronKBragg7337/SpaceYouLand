@@ -22,6 +22,31 @@ body → walkable ship → dock/station → planet surface → atmosphere → sp
 The world is built by machines and labor over time rather than appearing from menus. Fortis is the
 first playable faction slice: armored, practical, militarized, and physically legible.
 
+**SYL is a REAL SOLAR SYSTEM (Jaron, 2026-06-19).** The endgame is *multiple* real planets — eventually
+mapped to our actual solar system — that players physically fly between. There is never just "the planet";
+every planet is a data-driven body, and the way one planet is built must be the reusable pattern for all of
+them. (Reference frame: the seamless body→ship→surface→orbit→other-world scale is the KSP-style *mechanic*,
+but the *principle* is realism + correct placement on a sphere. Do not over-index on any one game; build the
+general, reusable, data-driven system — see [[syl-endgame-intent]], [[realism-law]].)
+
+## ★ BUILD-ORDER PRINCIPLE — planet first, then place things ON it (Jaron, 2026-06-19)
+
+The home/remote/planet height-mismatch bug came from PROCESS: Fortis (a flat platform), the remote pad, and
+the planet were each authored in *separate sessions* at *different heights/levels*, then a planet was bolted
+on afterward. That is backwards and must never be repeated.
+
+- **The planet body is the foundation. Build/define it FIRST.** Then place every structure ON its surface at
+  the correct spherical position with **radial "up" orientation** (the surface normal points away from the
+  body center). A site's flat local pad is fine, but it must be *seated on* the sphere at that point.
+- **One surface, not stacked shells.** A location must have exactly one visible-and-physical ground. Never a
+  near-field cap *and* a coarse global geoid both rendering as separate surfaces at a location ("a planet
+  inside the planet"). The coarse geoid is ONLY the distant silhouette beyond the near-field surface.
+- **Acceptance is measured, not screenshotted.** "Fixed" = a straight-down trace at a base and at open
+  ground hit ONE continuous surface (heights agree within the structure's intended raise), AND looking
+  straight up from open ground shows only sky (no second shell). Do not declare a planet fixed from a single
+  framed capture.
+- This pattern is **per-planet and reusable** for the future multi-planet solar system.
+
 ## Working with Jaron
 
 - Be proactive and build coherent chunks; do not stop at plans when implementation is possible.
@@ -70,5 +95,13 @@ cap covering 156.082 km and matching the global geoid's first ring. The cap is b
 tiles remain hidden collision backups only, so they cannot appear as rectangular shelves. A PIE player
 spawn outside both tiles landed on the cap's analytic sphere instead of falling through. The remote
 80×80 m deck, shelter, 45 m beacon, and real pad lights remain intact, and the ship still settles at home
-with exact zero rotation. Jaron's next useful test is repeating the three screenshot views and the full
-home→site→home flight; its cruise time, beacon range, approach, and touchdown should drive the next pass.
+with exact zero rotation.
+
+**CORRECTION (Jaron testing, 2026-06-19 — the cap fix is NOT finished).** Jaron flew it and the planet still
+reads as two stacked shells with the bases floating. Claude verified live (editor, commit 5cb310f): the cap
+IS a real physical curved surface (top z=0, open ground 1 km out traces to −7.86 cm = true sphere ✓), BUT
+(a) the home apron deck traces at **+54 cm while the surface under it is ≈0** → the base is NOT seated on the
+planet (it floats ~0.5 m above), and (b) the coarse global geoid is a SEPARATE actor that doesn't even load
+in the editor world while the cap is always-loaded → two surfaces, "a planet inside the planet." Codex's
+captures looked fine only because they framed the new cap in isolation. **The fix Claude now owns (Codex out
+of usage): apply the BUILD-ORDER PRINCIPLE above — one surface, bases seated on it, measured acceptance.**

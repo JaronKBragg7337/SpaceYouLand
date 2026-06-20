@@ -22,6 +22,16 @@ units. No premade assets — **everything is authored from scratch.** Current bu
 outpost, a clear external vehicle-development apron, and a modular walkable real-physics gunship with
 a physical pilot seat, pressure door, and ramp. Owner: Jaron.
 
+**SYL is a REAL SOLAR SYSTEM — MULTIPLE planets people fly between (Jaron, 2026-06-19), eventually mapped to
+our actual solar system.** Never build for "one planet." **★ BUILD-ORDER PRINCIPLE: the planet body is the
+foundation — build/define the planet FIRST, then place every structure ON its surface** at the correct
+spherical position with radial "up" (surface normal away from body center). ONE visible-and-physical surface
+per location — never a near-field cap AND a coarse geoid both rendering as ground ("a planet inside the
+planet"); the coarse geoid is only the distant silhouette. "Fixed" is MEASURED (down-traces at base and open
+ground agree; looking straight up from open ground shows only sky), never declared from one framed capture.
+The current planet height-mismatch came from authoring Fortis, the remote pad, and the planet in separate
+sessions at different heights — do not repeat that. See MEMORY.md for the full statement.
+
 ## 2. Connect to Unreal — the build tools are DEFERRED (must be loaded)
 - The `unreal-mcp` tools are NOT loaded by default. Load them with **ToolSearch** (query `unreal`, or
   `select:mcp__unreal-mcp__list_toolsets,mcp__unreal-mcp__describe_toolset,mcp__unreal-mcp__call_tool`).
