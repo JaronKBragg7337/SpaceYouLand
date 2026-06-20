@@ -66,6 +66,14 @@ on afterward. That is backwards and must never be repeated.
    `github.com/JaronKBragg7337/SpaceYouLand` (`main`). The repository is currently public; never commit
    secrets or personal data.
 5. The next agent resumes the first current item under BUILDLOG **Next up**, not an older stale plan.
+6. **Keep the live log lean (token discipline).** `BUILDLOG.md` is the small live log (recent entries +
+   Next up); full history lives in append-only `BUILDLOG_ARCHIVE.md` (read only for deep dives). When the
+   live log grows large again (~roughly >15 entries / >4k tokens), rotate the older entries into the archive.
+7. **Crash/limit resilience.** A session that crashes or hits a usage limit is a CONTAMINATION event: it may
+   leave an unlogged "ghost" actor in Unreal (this is what the invisible "brown layer" was — a crashed planet
+   build, never logged, that every later log-reading session missed). So: (a) at session start, enumerate the
+   live scene and compare to the log — flag ghosts/phantoms before trusting it; (b) commit BEFORE a risky
+   change, not only after; (c) if nearing a limit, push a one-line "SESSION INCOMPLETE — was mid-X" first.
 
 ## Current reality (2026-06-19)
 

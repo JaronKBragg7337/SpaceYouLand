@@ -11,6 +11,18 @@ doing anything else, get oriented IN THIS ORDER:
    gotchas) and BUILDLOG.md (current state, conventions, and the "Next up" list).
    Both are in the project root:
    C:\Users\lilli\Documents\Unreal Projects\CurtisAILab
+   NOTE: BUILDLOG.md is the LEAN live log (recent entries + Next up). The full
+   history is in BUILDLOG_ARCHIVE.md — do NOT read it at startup; open it only
+   for a deep dive into past how/when/who. This keeps session-start cheap.
+
+1b. VERIFY THE LIVE SCENE vs THE LOG (catches crash "ghost" state). Once Unreal
+   is connected, do a quick actor enumeration (e.g. SceneTools.find_actors by
+   name/class) and compare against what the log says should exist. Flag any
+   actor NOT in the log (a ghost left by a crashed/limit-hit session) and any
+   logged actor missing from the scene. A prior planet build crashed on a usage
+   limit and left an invisible "brown layer" actor no later session knew about,
+   because it walked the LOG not the WORLD. Cheap (1-2 calls); do it before new
+   work whenever something looks off.
 
 2. Read the project-root MEMORY.md. It is the agent-neutral memory shared through
    GitHub. If your runtime also has private linked memories (realism-law,
@@ -38,6 +50,16 @@ Claude and Codex share progress through SESSION_HANDOFF.md, BUILDLOG.md, and
 MEMORY.md. Every completed chunk must state who built it and be pushed so the
 other agent can continue without guessing. The repository is currently PUBLIC,
 so never commit secrets or personal data.
+
+CRASH/LIMIT DISCIPLINE (a crashed session is a contamination event):
+- COMMIT BEFORE a risky/large change too, not just after — so there's always a
+  "before" snapshot to roll back to if a session dies mid-task.
+- If you sense you're near a usage limit or about to do something risky, FIRST
+  append a one-line "WARNING: SESSION INCOMPLETE — was mid-<X>, scene may have
+  an unsaved/uncommitted <Y>" to BUILDLOG.md and push it. One line saves the
+  next agent from chasing a ghost for hours.
+- After any session that hit a wall or crashed, treat the live Unreal scene as
+  UNKNOWN until verified by enumeration (step 1b) — do not trust the log alone.
 
 To run continuously and hands-off, I'll use:  /loop  (you self-pace, do one
 coherent chunk per pass, log + screenshot + push each pass).
