@@ -155,6 +155,18 @@ Drive thread — **my lane is the in-engine build.** Don't rewrite the Drive doc
   (~12 cm at 300 m, ~36 cm at 1 km), so the character will look slightly raised far from base. Densifying the
   visual cap's pole rings to match is the immediate next refinement. Jaron to confirm bounce is gone on foot.
 
+- **2026-06-20 — Fix "Fortis floating / invisible platform": made the collision patch the VISIBLE surface
+  (Builder: Claude).** Jaron (sharp diagnosis): walking on an invisible platform while Fortis + ground
+  shadows sat on a lower brown layer — the float between the (invisible) collision patch at the true surface
+  and the (visible) coarse cap that dips below it. Fix: made `SYL_EarthLocalCollision_North` VISIBLE with the
+  Earth material (`bVisible=true`, `bHiddenInGame=false`, `bNeverDistanceCull`). Now the player walks on AND
+  sees the SAME normal-scale patch → no float, no invisible platform. The big coarse cap (visual, dips below)
+  fills 20→156 km beyond the ±20 km patch; the patch is the true surface so it renders on top near the base
+  (z-coincident only at the exact pole point — negligible). Capture: Fortis seated flush on one continuous
+  ground to the horizon. ⚠️ STILL OPEN (Jaron reported): a *little jitter while walking on foot* (ship is
+  fine). Likely CharacterMovement on the complex-as-simple patch; next targeted fix = convex or a flat
+  simple-collision local pad under the immediate Fortis area (rock-solid for the character). Jaron to retest.
+
 - **2026-06-20 — REVERTED the densified cap (it spiked); back to the smooth coarse cap (Builder: Claude).**
   The pole-clustered fine cap (RING_CONCENTRATION=2.2) put its innermost ring ~38 m from the pole, so the
   256-triangle pole FAN became long thin slivers right at the player → rendered as a ring of dark spikes
